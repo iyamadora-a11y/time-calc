@@ -246,6 +246,8 @@
     border-radius:var(--radius-sm);cursor:pointer;transition:background .15s,color .15s;
   }
   .seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .modeseg{gap:7px}
+  .modeseg button{font-size:.95rem;font-weight:700;min-height:42px;border-radius:999px}
 
   .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .amount{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}
@@ -262,20 +264,20 @@
   .pair label > span{font-size:.75rem;font-weight:600;color:var(--ink-3);text-align:center}
   .pair input{text-align:center;letter-spacing:.04em}
 
-  .dline{display:flex;flex-direction:column;gap:5px}
+  .dline{display:flex;flex-direction:column;gap:4px}
   .dline > span{font-size:.75rem;font-weight:600;color:var(--ink-3)}
   #diffD1,#diffD2{text-align:left;letter-spacing:.04em}
 
   .spans{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;min-width:0}
   .spans label{display:flex;flex-direction:column;gap:5px;min-width:0}
   .spans label span{font-size:.75rem;font-weight:600;color:var(--ink-3);text-align:center}
-  .spans input{text-align:center;font-size:1.05rem;padding:10px 2px;min-height:46px}
+  .spans input{text-align:center;font-size:1.05rem;padding:9px 2px;min-height:44px}
   .amount-spans{align-items:end}
-  .amount-spans .side-btn{height:46px}
+  .amount-spans .side-btn{height:44px}
 
   .units{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
   .units button{
-    font:inherit;font-size:.98rem;min-height:44px;
+    font:inherit;font-size:.98rem;min-height:42px;
     border:1px solid transparent;background:var(--surface-2);color:var(--ink-2);
     border-radius:999px;cursor:pointer;transition:background .15s,color .15s;
   }
@@ -295,18 +297,20 @@
   .subactions.three .ghost{font-size:.85rem;padding:0 4px}
   .ghost{
     font:inherit;font-size:.92rem;min-height:46px;
-    border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);
+    border:1px solid transparent;background:var(--surface-2);color:var(--ink-2);
     border-radius:999px;cursor:pointer;transition:border-color .15s,color .15s;
   }
-  .ghost:hover{border-color:var(--accent-line);color:var(--ink)}
+  .ghost:hover{color:var(--ink)}
 
   .result{
     background:var(--accent-soft);border-radius:var(--radius-sm);
-    padding:12px 14px 13px;display:flex;flex-direction:column;gap:4px;
+    padding:10px 14px 11px;display:flex;flex-direction:column;gap:4px;
     background-image:linear-gradient(180deg, var(--lift-soft) 0%, rgba(255,255,255,0) 100%);
   }
   .result .lab{color:var(--tint)}
-  .result-main{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap}
+  /* 결과가 있든 없든 높이가 같아야 아래 키패드가 움직이지 않습니다 */
+  .result-main{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:nowrap;min-height:81px}
+  #panelDiff .result-main{min-height:44px}
   .value{
     font-family:var(--mono);
     font-size:2.3rem;font-weight:700;line-height:1.15;letter-spacing:-.02em;
@@ -314,19 +318,22 @@
   }
   .value.dim{color:var(--ink-3);font-size:1.15rem;font-weight:500;font-family:inherit}
   .value.compact{font-size:1.5rem;letter-spacing:-.01em}
-  .res-btns{flex:none;display:flex;flex-direction:column;gap:6px;align-items:stretch}
+  .res-btns{flex:none;display:flex;flex-direction:column;gap:9px;align-items:stretch}
   .copy{
     flex:none;font:inherit;font-size:.85rem;padding:9px 15px;
     border:1px solid transparent;background:var(--surface-solid);color:var(--ink-2);
     border-radius:999px;cursor:pointer;white-space:nowrap;
   }
   .copy:hover{color:var(--ink)}
-  .res-btns .copy{padding:7px 11px;font-size:.8rem}
+  .res-btns .copy{padding:7px 13px;font-size:.84rem}
   /* 기준값 버튼은 복사 버튼과 완전히 같은 모양입니다 */
-  .meta{font-size:.92rem;color:var(--ink-2)}
+  .meta{
+    font-size:.85rem;color:var(--ink-2);min-height:34px;line-height:34px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
   .badge{
-    display:inline-block;font-size:.78rem;font-weight:700;padding:4px 11px;border-radius:999px;
-    background:var(--surface-solid);color:var(--tint);margin-right:6px;
+    display:inline-block;font-size:.76rem;font-weight:700;padding:4px 9px;border-radius:999px;line-height:18px;
+    background:var(--surface-solid);color:var(--tint);margin-right:5px;
   }
   /* 숫자 키패드 */
   .keypad{
@@ -334,13 +341,12 @@
     border-top-color:var(--line-top);
     padding:9px;box-shadow:var(--shadow);
     -webkit-backdrop-filter:blur(18px) saturate(1.1);backdrop-filter:blur(18px) saturate(1.1);
-    background-image:linear-gradient(180deg, var(--lift) 0%, rgba(255,255,255,0) 90px);
   }
   .kp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
   .kp-grid button{
     font-family:var(--mono);font-size:1.25rem;font-weight:600;
     font-variant-numeric:tabular-nums;
-    min-height:44px;border:1px solid transparent;border-radius:var(--radius-sm);
+    min-height:42px;border:1px solid transparent;border-radius:var(--radius-sm);
     background:var(--surface-2);color:var(--ink);cursor:pointer;
     display:flex;align-items:center;justify-content:center;
     -webkit-tap-highlight-color:transparent;
@@ -348,7 +354,8 @@
   }
   .kp-grid button:hover{border-color:var(--accent-line)}
   .kp-grid button:active{background:var(--accent-soft);transform:scale(.96)}
-  .kp-grid .kp-next{font-family:var(--sans);font-size:.88rem;font-weight:600;color:var(--ink-2)}
+  .kp-move{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+  .kp-move button{color:var(--ink-2);padding:0}
   .kp-grid .kp-back{background:var(--accent-soft);color:var(--tint)}
   .kp-grid .kp-back:active{background:var(--tint);color:var(--accent-ink)}
 
@@ -502,7 +509,6 @@
     <div class="error" id="timeError" role="alert" hidden></div>
 
     <div class="result">
-      <span class="lab">결과</span>
       <div class="result-main">
         <div class="value dim" id="timeValue">계산 결과가 여기에 표시됩니다</div>
         <div class="res-btns">
@@ -510,7 +516,7 @@
           <button class="copy" type="button" id="copyTime" hidden>복사</button>
         </div>
       </div>
-      <div class="meta" id="timeMeta" hidden></div>
+      <div class="meta" id="timeMeta"></div>
     </div>
   </section>
 
@@ -556,7 +562,6 @@
     <div class="error" id="dateError" role="alert" hidden></div>
 
     <div class="result">
-      <span class="lab">결과</span>
       <div class="result-main">
         <div class="value dim" id="dateValue">계산 결과가 여기에 표시됩니다</div>
         <div class="res-btns">
@@ -564,15 +569,19 @@
           <button class="copy" type="button" id="copyDate" hidden>복사</button>
         </div>
       </div>
-      <div class="meta" id="dateMeta" hidden></div>
+      <div class="meta" id="dateMeta"></div>
     </div>
   </section>
 
   <div class="stack" id="panelDiff" role="tabpanel" aria-labelledby="tabDiff" hidden>
 
-    <section class="card">
+    <div class="seg modeseg" id="diffMode">
+      <button type="button" data-mode="time" aria-pressed="true">시간 차이</button>
+      <button type="button" data-mode="date" aria-pressed="false">날짜 차이</button>
+    </div>
+
+    <section class="card" id="diffTimeCard">
       <div class="field">
-        <span class="lab">시간 차이</span>
         <div class="pair">
           <label><span>시작</span><input type="text" id="diffT1" inputmode="none" maxlength="5" autocomplete="off" aria-describedby="diffTimeError"></label>
           <label><span>종료</span><input type="text" id="diffT2" inputmode="none" maxlength="5" autocomplete="off" aria-describedby="diffTimeError"></label>
@@ -590,18 +599,16 @@
       <div class="error" id="diffTimeError" role="alert" hidden></div>
 
       <div class="result">
-        <span class="lab">결과</span>
         <div class="result-main">
           <div class="value dim" id="diffTimeValue">계산 결과가 여기에 표시됩니다</div>
           <button class="copy" type="button" id="copyDiffTime" hidden>복사</button>
         </div>
-        <div class="meta" id="diffTimeMeta" hidden></div>
+        <div class="meta" id="diffTimeMeta"></div>
       </div>
     </section>
 
-    <section class="card">
+    <section class="card" id="diffDateCard" hidden>
       <div class="field">
-        <span class="lab">날짜 차이</span>
         <label class="dline"><span>시작</span>
           <div class="amount">
             <input type="text" id="diffD1" inputmode="none" maxlength="12" autocomplete="off" aria-describedby="diffDateError">
@@ -639,12 +646,11 @@
       <div class="error" id="diffDateError" role="alert" hidden></div>
 
       <div class="result">
-        <span class="lab">결과</span>
         <div class="result-main">
           <div class="value dim" id="diffDateValue">계산 결과가 여기에 표시됩니다</div>
           <button class="copy" type="button" id="copyDiffDate" hidden>복사</button>
         </div>
-        <div class="meta" id="diffDateMeta" hidden></div>
+        <div class="meta" id="diffDateMeta"></div>
       </div>
     </section>
   </div>
@@ -660,7 +666,10 @@
         <button type="button" data-k="7">7</button>
         <button type="button" data-k="8">8</button>
         <button type="button" data-k="9">9</button>
-        <button type="button" class="kp-next" data-k="next" aria-label="다음 칸으로 이동">칸이동</button>
+        <div class="kp-move">
+          <button type="button" data-k="prev" aria-label="이전 칸으로 이동"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <button type="button" data-k="next" aria-label="다음 칸으로 이동"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+        </div>
         <button type="button" data-k="0">0</button>
         <button type="button" class="kp-back" data-k="back" aria-label="한 글자 지우기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 5H10l-6 7 6 7h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"></path><path d="M17.5 9.5l-5 5M12.5 9.5l5 5"></path></svg></button>
     </div>
@@ -745,7 +754,7 @@
     closeCal();
     currentTab = which;
     try { localStorage.setItem("tdc-tab", which); } catch(e){}
-    if (KP_FIELDS && KP_FIELDS[which]) kpFocus(KP_FIELDS[which][0]);
+    if (KP_FIELDS && KP_FIELDS[which]) kpFocus(kpList()[0]);
   }
   $("tabTime").addEventListener("click", function(){ selectTab("time"); });
   $("tabDate").addEventListener("click", function(){ selectTab("date"); });
@@ -1112,7 +1121,7 @@
     v.textContent = "계산 결과가 여기에 표시됩니다";
     v.classList.add("dim");
     v.classList.remove("compact");
-    $(k + "Meta").hidden = true;
+    $(k + "Meta").innerHTML = "";
     var K = k.charAt(0).toUpperCase() + k.slice(1);
     $("copy" + K).hidden = true;
     var useBtn = document.getElementById("use" + K);
@@ -1391,7 +1400,7 @@
 
     var nodes = [];
     if (d.swapped) nodes.push(badgeEl("역순 입력"));
-    nodes.push(textEl(d.from + " ~ " + d.to + " · 총 " + d.totalDays + "일"));
+    nodes.push(textEl(d.from + " ~ " + d.to + (unit === "day" ? "" : " · 총 " + d.totalDays + "일")));
     showResult("diffDate", out, nodes, out.length > 9);
     if (silent !== true) addHistory(d.from + " ~ " + d.to + " = " + out);
   }
@@ -1426,6 +1435,28 @@
     lastDiffDate = {from: from, to: to, totalDays: totalDays, months: months, remDays: remDays, swapped: swapped};
     renderDiffDate(silent === true);
   }
+
+  /* 차이 계산 — 시간/날짜 중 하나만 표시 (키패드가 화면 안에 들어오도록) */
+  var diffMode = "time";
+
+  function applyDiffMode(m){
+    if (m !== "date") m = "time";
+    diffMode = m;
+    Array.prototype.forEach.call($("diffMode").querySelectorAll("button"), function(b){
+      b.setAttribute("aria-pressed", String(b.dataset.mode === m));
+    });
+    $("diffTimeCard").hidden = m !== "time";
+    $("diffDateCard").hidden = m !== "date";
+    closeCal();
+    try { localStorage.setItem("tdc-diffmode", m); } catch(e){}
+  }
+
+  $("diffMode").addEventListener("click", function(ev){
+    var btn = ev.target.closest("button");
+    if (!btn) return;
+    applyDiffMode(btn.dataset.mode);
+    kpFocus(kpList()[0]);
+  });
 
   wireSegment($("diffUnits"));
   $("diffUnits").addEventListener("click", function(ev){
@@ -1536,7 +1567,12 @@
     $(id).addEventListener("focus", function(){ kpTarget = id; });
   });
 
-  function kpList(){ return KP_FIELDS[currentTab] || KP_FIELDS.time; }
+  function kpList(){
+    if (currentTab === "diff") {
+      return diffMode === "date" ? ["diffD1", "diffD2"] : ["diffT1", "diffT2"];
+    }
+    return KP_FIELDS[currentTab] || KP_FIELDS.time;
+  }
 
   function kpEl(){
     var list = kpList();
@@ -1568,9 +1604,10 @@
     if (!el) return;
     if (document.activeElement !== el) kpFocus(el.id);
 
-    if (key === "next") {
+    if (key === "prev" || key === "next") {
       var li = kpList(), ni = li.indexOf(el.id);
-      kpFocus(li[(ni + 1) % li.length]);
+      var step = key === "next" ? 1 : -1;
+      kpFocus(li[(ni + step + li.length) % li.length]);
       return;
     }
 
@@ -1814,6 +1851,7 @@
 
   /* ---------- initial state ---------- */
   restorePicks();
+  try { applyDiffMode(localStorage.getItem("tdc-diffmode") || "time"); } catch(e){ applyDiffMode("time"); }
   renderHistory();
   kpFocus(KP_FIELDS[currentTab][0]);
   try {
