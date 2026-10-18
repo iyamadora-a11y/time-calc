@@ -1186,7 +1186,8 @@
 
     var amount = parseDuration($("addAmount").value);
     if (amount === "minute") { showError(errEl, "분은 59 이하로 입력해주세요. 130 → 1시간 30분"); return; }
-    if (!amount || (amount.h === 0 && amount.m === 0)) { showError(errEl, "더하거나 뺄 시간을 입력해주세요."); return; }
+    // 더하거나 뺄 시간이 비어 있으면 안내 없이 결과만 비워둡니다
+    if (!amount || (amount.h === 0 && amount.m === 0)) { clearError(errEl); clearResult("time"); return; }
     var h = amount.h, m = amount.m;
     if (!quiet) $("addAmount").value = h ? h + ":" + pad(m) : String(m);
 
