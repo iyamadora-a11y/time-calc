@@ -1898,8 +1898,10 @@
   $("useTime").addEventListener("click", function(){
     if (!lastClock) return;
     $("baseTime").value = lastClock;
+    $("addAmount").value = "";          // 이어서 새 값을 넣도록 비웁니다
     clearError($("timeError"));
     liveTime();
+    kpFocus("addAmount");
     toast("결과를 기준 시간으로 옮겼습니다.");
   });
   $("useDate").addEventListener("click", function(){
