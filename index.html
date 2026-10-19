@@ -746,7 +746,7 @@
       <h2>최근 계산</h2>
       <button class="hist-clear" type="button" id="clearHist" hidden>전체 삭제</button>
     </div>
-    <div class="empty" id="histEmpty">아직 기록이 없습니다. 계산하면 최근 10개까지 여기에 쌓입니다.</div>
+    <div class="empty" id="histEmpty">아직 기록이 없습니다. 계산하면 최근 5개까지 여기에 쌓입니다.</div>
     <ol id="histList"></ol>
   </section>
 
@@ -1842,12 +1842,13 @@
   });
 
   /* ---------- history ---------- */
+  var HIST_MAX = 5;             // 최근 계산에 남길 개수
   var history = [];
   try {
     var raw = localStorage.getItem("tdc-history");
     if (raw) {
       var parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) history = parsed.filter(function(x){ return typeof x === "string"; }).slice(0, 10);
+      if (Array.isArray(parsed)) history = parsed.filter(function(x){ return typeof x === "string"; }).slice(0, HIST_MAX);
     }
   } catch(e){ history = []; }
 
@@ -1875,7 +1876,7 @@
 
   function addHistory(entry){
     history.unshift(entry);
-    if (history.length > 10) history.length = 10;
+    if (history.length > HIST_MAX) history.length = HIST_MAX;
     saveHistory();
     renderHistory();
   }

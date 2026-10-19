@@ -1,7 +1,7 @@
 /* 시간 & 날짜 계산기 — 오프라인 지원 서비스 워커
    앱 파일을 수정한 뒤에는 아래 CACHE 버전 숫자를 올려주세요 (예: v1 → v2). */
 
-var CACHE = "tdc-v41";
+var CACHE = "tdc-v42";
 
 var ASSETS = [
   "./",
