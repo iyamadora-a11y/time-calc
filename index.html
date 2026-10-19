@@ -1,20 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>시간 &amp; 날짜 계산기</title>
-<meta name="description" content="시간과 날짜를 더하거나 빼서 바로 결과를 확인하는 계산기. 윤년·월말·24시간 경계까지 정확하게 계산합니다.">
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#F8F3EA" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1B1715" media="(prefers-color-scheme: dark)">
-<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+<meta name="description" content="할인 계산, 일반 계산기, 실시간 환율, 원금 역산을 한 화면에서. 숫자패드 내장 반응형 계산기.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F3F1EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E0F12" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="할인 계산기">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="시간계산기">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
-<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="할인 계산기">
+<meta property="og:description" content="할인 계산 · 일반 계산 · 환율 · 원금 역산을 한 화면에서. 숫자패드 내장 반응형 계산기.">
+<meta property="og:locale" content="ko_KR">
+
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+
+<style>
+  /* base reset */
+  *{box-sizing:border-box}
+  html{color-scheme:light dark;height:100%}
+  :root{
+    padding-top:env(safe-area-inset-top, 0px);
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+  }
+  body{margin:0;min-height:100%;-webkit-font-smoothing:antialiased}
+  img{max-width:100%}
+  [hidden]{display:none !important}
+  button{font:inherit}
+</style>
+
+<title>할인 계산기</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
@@ -31,88 +53,83 @@
     --line:rgba(22,24,29,.07);
     --line-strong:rgba(22,24,29,.16);
     --ink:#16181D;
-    --ink-2:#64696F;
-    --ink-3:#9BA0A6;
-    /* 강조 — One UI처럼 거의 무채색 그래파이트, 포인트 틴트는 따로 */
+    --muted:#64696F;
+    --muted-2:#9BA0A6;
+    /* 강조 — 거의 무채색 그래파이트, 포인트 틴트는 따로 */
     --accent:#24262B;
-    --accent-ink:#FFFFFF;
+    --on-accent:#FFFFFF;
     --accent-soft:#E9EDE6;
     --accent-line:rgba(36,38,43,.18);
-    --tint:#5B6F5A;       /* 세이지 포인트 — 선택·배지 글자 */
+    --tint:#5B6F5A;     /* 세이지 포인트 */
+    --save:#A3563F;
+    --save-soft:#F7EDE6;
     --danger:#B4524A;
     --danger-soft:#FBEBE7;
-    --line-top:var(--line);
-    --lift:rgba(255,255,255,0);
-    --lift-soft:rgba(255,255,255,0);
     --shadow:0 1px 2px rgba(22,24,29,.04), 0 10px 30px rgba(22,24,29,.07);
-    --radius:24px;
-    --radius-sm:16px;
-    --radius-xs:12px;
+    --radius:22px;
+    --radius-sm:14px;
     --sans:"IBM Plex Sans KR", system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     color-scheme:light dark;
   }
-
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#120F0E;
-      --grad-1:#33241B;   /* 앰버 — 위에서 번지는 따뜻한 빛 */
-      --grad-2:#1B1715;   /* 중간 바탕 */
-      --grad-3:#26211A;   /* 모래 */
-      --grad-4:#201A1B;   /* 깊은 코코아 */
-      --surface:rgba(41,35,32,.82);
-      --surface-solid:#292320;
-      --surface-2:#332B27;
-      --line:rgba(255,255,255,.09);
-      --line-strong:rgba(255,255,255,.20);
-      --line-top:rgba(255,255,255,.14);
-      --lift:rgba(255,255,255,.055);
-      --lift-soft:rgba(255,255,255,.04);
-      --ink:#F2ECE6;
-      --ink-2:#B5AAA1;
-      --ink-3:#897E76;
-      --accent:#EBB68C;
-      --accent-ink:#2A1B10;
-      --accent-soft:#33281F;
-      --accent-line:rgba(235,182,140,.35);
-      --tint:#E4B68F;
+      --bg:#0E0F12;
+      --grad-1:#2A2220;
+      --grad-2:#17181B;
+      --grad-3:#182420;
+      --grad-4:#181C28;
+      --surface:rgba(32,34,38,.82);
+      --surface-solid:#202226;
+      --surface-2:#282A2F;
+      --line:rgba(255,255,255,.08);
+      --line-strong:rgba(255,255,255,.18);
+      --ink:#ECEDEF;
+      --muted:#A8ADB4;
+      --muted-2:#7D838A;
+      --accent:#ECEDEF;
+      --on-accent:#16181D;
+      --accent-soft:#2A302B;
+      --accent-line:rgba(255,255,255,.22);
+      --tint:#A8C3A4;
+      --save:#E0A48C;
+      --save-soft:#33251F;
       --danger:#F0A49A;
       --danger-soft:#3A2420;
-      --shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 36px rgba(0,0,0,.5);
+      --shadow:0 1px 2px rgba(0,0,0,.35), 0 14px 34px rgba(0,0,0,.45);
     }
   }
   :root[data-theme="dark"]{
-    --bg:#120F0E;
-    --grad-1:#33241B;   /* 앰버 — 위에서 번지는 따뜻한 빛 */
-    --grad-2:#1B1715;   /* 중간 바탕 */
-    --grad-3:#26211A;   /* 모래 */
-    --grad-4:#201A1B;   /* 깊은 코코아 */
-    --surface:rgba(41,35,32,.82);
-    --surface-solid:#292320;
-    --surface-2:#332B27;
-    --line:rgba(255,255,255,.09);
-    --line-strong:rgba(255,255,255,.20);
-    --line-top:rgba(255,255,255,.14);
-    --lift:rgba(255,255,255,.055);
-    --lift-soft:rgba(255,255,255,.04);
-    --ink:#F2ECE6;
-    --ink-2:#B5AAA1;
-    --ink-3:#897E76;
-    --accent:#EBB68C;
-    --accent-ink:#2A1B10;
-    --accent-soft:#33281F;
-    --accent-line:rgba(235,182,140,.35);
-    --tint:#E4B68F;
+    --bg:#0E0F12;
+    --grad-1:#2A2220;
+    --grad-2:#17181B;
+    --grad-3:#182420;
+    --grad-4:#181C28;
+    --surface:rgba(32,34,38,.82);
+    --surface-solid:#202226;
+    --surface-2:#282A2F;
+    --line:rgba(255,255,255,.08);
+    --line-strong:rgba(255,255,255,.18);
+    --ink:#ECEDEF;
+    --muted:#A8ADB4;
+    --muted-2:#7D838A;
+    --accent:#ECEDEF;
+    --on-accent:#16181D;
+    --accent-soft:#2A302B;
+    --accent-line:rgba(255,255,255,.22);
+    --tint:#A8C3A4;
+    --save:#E0A48C;
+    --save-soft:#33251F;
     --danger:#F0A49A;
     --danger-soft:#3A2420;
-    --shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 36px rgba(0,0,0,.5);
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 14px 34px rgba(0,0,0,.45);
   }
 
-  *{box-sizing:border-box}
+  /* no double-tap zoom anywhere on the page (Safari 13+, Chrome) */
+  *{box-sizing:border-box;touch-action:manipulation}
+  html{-webkit-text-size-adjust:100%;touch-action:manipulation}
   html,body{height:100%}
-  html{touch-action:manipulation}
   body{
-    margin:0;
     background:var(--bg);
     background-image:
       radial-gradient(135% 80% at 88% -5%, var(--grad-1) 0%, transparent 62%),
@@ -122,681 +139,2298 @@
     background-attachment:fixed;
     color:var(--ink);
     font-family:var(--sans);
-    font-size:16px;
+    font-size:15px;
     line-height:1.5;
     -webkit-text-size-adjust:100%;
     -webkit-tap-highlight-color:transparent;
     overscroll-behavior-y:none;
-    touch-action:manipulation;
   }
-  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
-
-  .wrap{
+  .app{
     width:100%;
-    max-width:560px;
-    margin:0 auto;
-    padding:0 16px;
-    padding-top:calc(14px + env(safe-area-inset-top, 0px));
-    padding-bottom:calc(24px + env(safe-area-inset-bottom, 0px));
+    max-width:460px;
+    margin-inline:auto;
+    padding-inline:16px;
+    padding-block:16px 40px;
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:12px;
   }
 
-  .topbar{display:flex;align-items:stretch;gap:8px}
-  .theme-btn{
-    flex:none;width:46px;height:46px;align-self:center;
-    border:1px solid var(--line);
-    background:var(--surface);
-    color:var(--ink-2);
-    border-radius:50%;cursor:pointer;
-    display:grid;place-items:center;font-size:1.05rem;
+  /* ---- segmented tabs + theme switch ---- */
+  .tabrow{display:flex;align-items:stretch;gap:7px}
+  .themebtn{
+    flex:none;width:44px;height:44px;align-self:center;
+    appearance:none;cursor:pointer;padding:0;
+    background:var(--surface);border:0;border-radius:50%;
+    color:var(--muted);display:flex;align-items:center;justify-content:center;
     -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    transition:color .12s,border-color .12s;
   }
-  .theme-btn:hover{border-color:var(--line-strong);color:var(--ink)}
+  .themebtn:hover{color:var(--ink)}
+  .themebtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .themebtn svg{width:19px;height:19px;display:block}
 
   .tabs{
-    flex:1;min-width:0;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
-    background:transparent;border-radius:999px;padding:0;
+    flex:1;min-width:0;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:2px;
+    background:transparent;border:0;border-radius:999px;padding:0;
   }
-  .tabs button{
-    appearance:none;border:0;background:transparent;color:var(--ink-3);
-    font:inherit;font-weight:600;font-size:.95rem;padding:12px 4px;border-radius:999px;cursor:pointer;
-    white-space:nowrap;letter-spacing:-.01em;transition:color .15s,background .15s;
+  .tab{
+    appearance:none;border:0;background:transparent;color:var(--muted-2);
+    font-family:var(--sans);font-size:.8rem;font-weight:600;
+    padding:11px 2px;border-radius:999px;cursor:pointer;transition:background .15s,color .15s;
+    white-space:nowrap;letter-spacing:-.02em;
   }
-  .tabs button[aria-selected="true"]{
+  .tab[aria-selected="true"]{
     background:var(--surface);color:var(--ink);font-weight:700;
     box-shadow:0 1px 2px rgba(22,24,29,.06);
     -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
   }
+  .tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
+  /* ---- cards ---- */
   .card{
-    background:var(--surface);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    padding:14px 14px;
-    display:flex;flex-direction:column;gap:10px;
-    -webkit-backdrop-filter:blur(18px) saturate(1.1);
-    backdrop-filter:blur(18px) saturate(1.1);
-    background-image:linear-gradient(180deg, var(--lift) 0%, rgba(255,255,255,0) 140px);
-    border-top-color:var(--line-top);
-  }
-  .field{display:flex;flex-direction:column;gap:5px}
-  .lab{font-size:.82rem;font-weight:600;letter-spacing:0;color:var(--ink-2)}
-
-  input[type="time"],input[type="date"],input[type="text"]{
-    width:100%;
-    font-family:var(--mono);
-    font-size:1.25rem;font-weight:600;
-    color:var(--ink);
-    background:var(--surface-2);
-    border:1px solid transparent;
-    border-radius:var(--radius-sm);
-    padding:11px 14px;
-    min-height:48px;
-    appearance:none;
-    transition:border-color .15s,background .15s;
-  }
-  input:focus{outline:none;border-color:var(--accent-line);background:var(--surface-solid)}
-  input[type="text"]{text-align:right;font-variant-numeric:tabular-nums}
-  #baseTime,#addAmount{text-align:left;letter-spacing:.04em}
-  #baseDate{text-align:left;letter-spacing:.04em}
-  .side-btn{
-    display:grid;place-items:center;min-width:66px;padding:0 14px;
-    border:1px solid transparent;background:var(--surface-2);color:var(--ink-2);
-    border-radius:var(--radius-sm);cursor:pointer;font:inherit;font-size:.88rem;white-space:nowrap;
-  }
-  .side-btn:hover{border-color:var(--accent-line);color:var(--ink)}
-
-  .cal{
-    margin-top:2px;padding:12px;
-    border:1px solid var(--line);border-radius:var(--radius-sm);
-    background:var(--surface-solid);box-shadow:var(--shadow);
-  }
-  .cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
-  .cal-title{
-    font:inherit;font-size:.98rem;font-weight:700;color:var(--ink);
-    background:transparent;border:0;border-radius:9px;padding:7px 12px;cursor:pointer;
-  }
-  .cal-title:hover{background:var(--surface-2)}
-  .cal-nav{
-    width:40px;height:40px;border:1px solid transparent;background:var(--surface-2);
-    color:var(--ink-2);border-radius:50%;cursor:pointer;font:inherit;font-size:1.1rem;line-height:1;
-  }
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-  .cal-grid span{text-align:center;font-size:.72rem;color:var(--ink-3);padding:4px 0}
-  .cal-grid button{
-    font:inherit;font-size:.95rem;min-height:42px;border:0;border-radius:50%;
-    background:transparent;color:var(--ink);cursor:pointer;font-variant-numeric:tabular-nums;
-  }
-  .cal-grid button:hover{background:var(--surface-2)}
-  .cal-grid button.today{box-shadow:inset 0 0 0 1.5px var(--tint);color:var(--tint);font-weight:700}
-  .cal-grid button.sel{background:var(--accent);color:var(--accent-ink);font-weight:700}
-  .cal-grid.cal-zoom{grid-template-columns:repeat(4,1fr);gap:6px}
-  .cal-grid.cal-zoom button{min-height:50px;font-size:.92rem;background:var(--surface-2);border-radius:999px}
-  .cal-grid.cal-zoom button.sel{background:var(--accent)}
-  input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  ::placeholder{color:var(--ink-3)}
-
-  .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .seg button{
-    font:inherit;font-size:1.3rem;font-weight:700;line-height:1;min-height:46px;
-    border:1px solid transparent;background:var(--surface-2);color:var(--ink-2);
-    border-radius:var(--radius-sm);cursor:pointer;transition:background .15s,color .15s;
-  }
-  .seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-  .modeseg{gap:7px}
-  .modeseg button{font-size:.95rem;font-weight:700;min-height:42px;border-radius:999px}
-
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .amount{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}
-  .suffix{
-    display:grid;place-items:center;padding:0 16px;border-radius:var(--radius-sm);
-    background:var(--surface-2);border:1px solid transparent;color:var(--ink-2);
-    font-size:.95rem;white-space:nowrap;
-  }
-
-  .stack{display:flex;flex-direction:column;gap:10px}
-
-  .pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .pair label{display:flex;flex-direction:column;gap:5px;min-width:0}
-  .pair label > span{font-size:.75rem;font-weight:600;color:var(--ink-3);text-align:center}
-  .pair input{text-align:center;letter-spacing:.04em}
-
-  .dline{display:flex;flex-direction:column;gap:4px}
-  .dline > span{font-size:.75rem;font-weight:600;color:var(--ink-3)}
-  #diffD1,#diffD2{text-align:left;letter-spacing:.04em}
-
-  .spans{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;min-width:0}
-  .spans label{display:flex;flex-direction:column;gap:5px;min-width:0}
-  .spans label span{font-size:.75rem;font-weight:600;color:var(--ink-3);text-align:center}
-  .spans input{text-align:center;font-size:1.05rem;padding:9px 2px;min-height:44px}
-  .amount-spans{align-items:end}
-  .amount-spans .side-btn{height:44px}
-
-  .units{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .units button{
-    font:inherit;font-size:.98rem;min-height:42px;
-    border:1px solid transparent;background:var(--surface-2);color:var(--ink-2);
-    border-radius:999px;cursor:pointer;transition:background .15s,color .15s;
-  }
-  .units button[aria-pressed="true"]{background:var(--accent-soft);border-color:transparent;color:var(--tint);font-weight:700}
-
-  /* 계산 버튼 위·아래 간격을 같게 (입력 → 계산 → 보조 버튼 → 구분선 모두 12px) */
-  .actions{display:grid;grid-template-columns:1fr;gap:9px;margin-top:-1px;margin-bottom:-1px}
-  .calc{
-    font:inherit;font-size:1.02rem;font-weight:700;min-height:50px;
-    border:0;border-radius:999px;background:var(--accent);color:var(--accent-ink);cursor:pointer;
-    box-shadow:0 2px 10px rgba(22,24,29,.12);transition:transform .08s,filter .15s;
-  }
-  .calc:active{transform:scale(.99)}
-  .calc:active{filter:brightness(.94)}
-  .subactions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-  .subactions.three{grid-template-columns:repeat(3,1fr);gap:8px}
-  .subactions.three .ghost{font-size:.85rem;padding:0 4px}
-  .ghost{
-    font:inherit;font-size:.92rem;min-height:46px;
-    border:1px solid transparent;background:var(--surface-2);color:var(--ink-2);
-    border-radius:999px;cursor:pointer;transition:border-color .15s,color .15s;
-  }
-  .ghost:hover{color:var(--ink)}
-
-  .result{
-    background:var(--accent-soft);border-radius:var(--radius-sm);
-    padding:10px 14px 11px;display:flex;flex-direction:column;gap:4px;
-    background-image:linear-gradient(180deg, var(--lift-soft) 0%, rgba(255,255,255,0) 100%);
-  }
-  .result .lab{color:var(--tint)}
-  /* 결과가 있든 없든 높이가 같아야 아래 키패드가 움직이지 않습니다 */
-  .result-main{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:nowrap;min-height:81px}
-  #panelDiff .result-main{min-height:44px}
-  .value{
-    font-family:var(--mono);
-    font-size:2.3rem;font-weight:700;line-height:1.15;letter-spacing:-.02em;
-    font-variant-numeric:tabular-nums;color:var(--ink);word-break:break-all;min-width:0;flex:1;
-  }
-  .value.dim{color:var(--ink-3);font-size:1.15rem;font-weight:500;font-family:inherit}
-  .value.compact{font-size:1.5rem;letter-spacing:-.01em}
-  .res-btns{flex:none;display:flex;flex-direction:column;gap:9px;align-items:stretch}
-  .copy{
-    flex:none;font:inherit;font-size:.85rem;padding:9px 15px;
-    border:1px solid transparent;background:var(--surface-solid);color:var(--ink-2);
-    border-radius:999px;cursor:pointer;white-space:nowrap;
-  }
-  .copy:hover{color:var(--ink)}
-  .res-btns .copy{padding:7px 13px;font-size:.84rem}
-  /* 기준값 버튼은 복사 버튼과 완전히 같은 모양입니다 */
-  .meta{
-    font-size:.85rem;color:var(--ink-2);min-height:34px;line-height:34px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
-  .badge{
-    display:inline-block;font-size:.76rem;font-weight:700;padding:4px 9px;border-radius:999px;line-height:18px;
-    background:var(--surface-solid);color:var(--tint);margin-right:5px;
-  }
-  /* 숫자 키패드 */
-  .keypad{
     background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
-    border-top-color:var(--line-top);
-    padding:9px;box-shadow:var(--shadow);
+    padding:18px 16px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow);
     -webkit-backdrop-filter:blur(18px) saturate(1.1);backdrop-filter:blur(18px) saturate(1.1);
   }
-  .kp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-  .kp-grid button{
-    font-family:var(--mono);font-size:1.25rem;font-weight:600;
-    font-variant-numeric:tabular-nums;
-    min-height:42px;border:1px solid transparent;border-radius:var(--radius-sm);
-    background:var(--surface-2);color:var(--ink);cursor:pointer;
+
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field > label{font-size:.84rem;font-weight:600;color:var(--muted);letter-spacing:.01em}
+  .inputwrap{
+    display:flex;align-items:center;gap:8px;
+    background:var(--surface-2);border:1px solid transparent;border-radius:var(--radius-sm);
+    padding:9px 11px 9px 15px;transition:border-color .15s,background .15s;cursor:text;
+  }
+  .inputwrap:focus-within,
+  .inputwrap.is-active{border-color:var(--accent-line);background:var(--surface-solid)}
+  .inputwrap input{
+    flex:1;min-width:0;width:100%;
+    appearance:none;border:0;background:transparent;color:var(--ink);
+    font-family:var(--mono);font-weight:600;font-size:1.55rem;line-height:1.25;
+    text-align:right;font-variant-numeric:tabular-nums;padding:0;
+  }
+  .inputwrap input:focus{outline:none}
+  .inputwrap input::placeholder{color:var(--muted-2);font-weight:400}
+  .unit{font-size:.95rem;font-weight:600;color:var(--muted);flex:none}
+
+  .clearbtn{
+    flex:none;appearance:none;border:0;cursor:pointer;padding:0;
+    width:30px;height:30px;border-radius:50%;
+    background:var(--surface-solid);color:var(--muted);opacity:1;
+    border:0;
+    font-size:17px;line-height:1;
     display:flex;align-items:center;justify-content:center;
-    -webkit-tap-highlight-color:transparent;
-    transition:background .12s,transform .06s;
+    transition:opacity .12s;
   }
-  .kp-grid button:hover{border-color:var(--accent-line)}
-  .kp-grid button:active{background:var(--accent-soft);transform:scale(.96)}
-  .kp-move{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-  .kp-move button{color:var(--ink-2);padding:0}
-  .kp-grid .kp-back{background:var(--accent-soft);color:var(--tint)}
-  .kp-grid .kp-back:active{background:var(--tint);color:var(--accent-ink)}
+  .clearbtn:hover{opacity:1}
+  .clearbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;opacity:1}
 
-  .error{background:var(--danger-soft);color:var(--danger);border-radius:var(--radius-sm);padding:12px 14px;font-size:.92rem;font-weight:600}
-  [hidden]{display:none!important}
+  .hint{font-size:.78rem;color:var(--muted);min-height:0}
+  .hint:empty{display:none}
+  .hint.error{color:var(--danger);font-weight:600}
 
-  .hist{
-    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
-    padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);
-    -webkit-backdrop-filter:blur(18px) saturate(1.1);backdrop-filter:blur(18px) saturate(1.1);
-    background-image:linear-gradient(180deg, var(--lift) 0%, rgba(255,255,255,0) 120px);
-    border-top-color:var(--line-top);
+  /* ---- quick rates ---- */
+  .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .chip{
+    appearance:none;cursor:pointer;
+    background:var(--surface-2);border:0;border-radius:999px;
+    color:var(--muted);font-family:var(--mono);font-size:.94rem;font-weight:500;
+    padding:11px 4px;min-height:46px;transition:background .12s,border-color .12s,color .12s;
   }
-  .hist-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .hist-head h2{margin:0;font-size:.95rem;font-weight:700}
-  .hist-clear{font:inherit;font-size:.82rem;background:none;border:0;color:var(--ink-3);cursor:pointer;padding:4px}
-  .hist-clear:hover{color:var(--danger)}
-  .hist ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
-  .hist li{
-    display:flex;align-items:center;gap:10px;padding:9px 2px;
-    border-bottom:1px solid var(--line);
-    font-family:var(--mono);
-    font-size:.88rem;color:var(--ink-2);
+  .chip:hover{color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--accent-soft);color:var(--tint);font-weight:700}
+  .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ---- chain toggle ---- */
+  .chain-row{display:flex;align-items:center;gap:9px;padding-top:0}
+  .chain-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex:none;margin:0}
+  .chain-row label{font-size:.86rem;font-weight:600;color:var(--muted);cursor:pointer}
+
+  /* ---- keypad ---- */
+  .pad-head{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    font-size:.78rem;color:var(--muted);
   }
-  .hist li:last-child{border-bottom:0}
-  .hist li span{flex:1;min-width:0;overflow-wrap:anywhere}
-  .hist li button{
-    flex:none;width:32px;height:32px;border:0;background:none;color:var(--ink-3);
-    border-radius:50%;cursor:pointer;font-size:1.1rem;line-height:1;
+  .pad-head .target{font-weight:700;color:var(--accent)}
+  .paste-btn{
+    appearance:none;cursor:pointer;
+    background:var(--surface-2);border:0;border-radius:999px;
+    color:var(--muted);font-family:var(--sans);font-size:.78rem;font-weight:600;
+    padding:6px 13px;min-height:32px;transition:border-color .12s,color .12s;
   }
-  .hist li button:hover{background:var(--danger-soft);color:var(--danger)}
-  .empty{font-size:.88rem;color:var(--ink-3);padding:6px 0}
+  .paste-btn:hover{color:var(--ink)}
+  .paste-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .keypad{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .key{
+    appearance:none;cursor:pointer;
+    background:var(--surface-2);border:0;border-radius:var(--radius-sm);
+    color:var(--ink);font-family:var(--mono);font-size:1.18rem;font-weight:600;
+    min-height:52px;padding:0;
+    transition:background .1s,border-color .1s,transform .06s;
+  }
+  .key:hover{background:var(--line-strong)}
+  .key:active{transform:scale(.96);background:var(--line-strong)}
+  .key.fn{font-family:var(--sans);font-size:1.02rem;font-weight:700;color:var(--muted)}
+  .key.wide{grid-column:span 2}
+  .key.wide3{grid-column:span 3}
+  .calcpad{gap:7px}
+  .calcpad .key{min-height:58px;font-size:1.3rem}
+  .calcpad .key.fn{font-size:1rem}
+  .calcpad .key.op{font-size:1.42rem}
+  .calcpad .key.eq{font-size:1.42rem}
+  .key.op{color:var(--tint);font-weight:700;font-size:1.3rem}
+  .key.eq{background:var(--accent);color:var(--on-accent);font-weight:700;font-size:1.3rem}
+  .key.eq:hover{background:var(--accent)}
+
+  /* ---- 일반 계산 디스플레이 ---- */
+  .calcdisp{
+    background:var(--accent-soft);border-radius:12px;padding:12px 14px 14px;
+    display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;
+    gap:3px;min-height:96px;
+  }
+  .calcdisp .expr{
+    font-family:var(--mono);font-size:.82rem;font-weight:600;color:var(--accent);
+    min-height:1.2em;text-align:right;overflow-wrap:anywhere;
+  }
+  .calcdisp .val{
+    font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums;
+    font-size:clamp(1.9rem,8vw,2.7rem);line-height:1.1;letter-spacing:-.02em;
+    color:var(--ink);text-align:right;overflow-wrap:anywhere;
+  }
+  .key:disabled{opacity:.3;cursor:default;transform:none}
+  .key:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ---- result ---- */
+  .rows{display:flex;flex-direction:column;gap:0}
+  .row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line)}
+  .row .k{font-size:.86rem;color:var(--muted);flex:none}
+  .row .v{font-family:var(--mono);font-size:1rem;font-weight:500;font-variant-numeric:tabular-nums;text-align:right}
+  .row.save .v{color:var(--save);font-weight:600}
+
+  .total{
+    background:var(--accent-soft);border-radius:var(--radius-sm);padding:16px 16px 18px;
+    display:flex;flex-direction:column;gap:3px;
+  }
+  .total .k{font-size:.82rem;font-weight:700;color:var(--tint);letter-spacing:.01em}
+  .total .v{
+    font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums;
+    font-size:clamp(2.1rem,8.5vw,2.9rem);line-height:1.1;letter-spacing:-.02em;color:var(--ink);
+    overflow-wrap:anywhere;
+  }
+  .total .v .won{font-size:.5em;font-weight:500;margin-left:.3em;color:var(--muted)}
+  .calcdisp{border-radius:var(--radius-sm)}
+
+  .savebar{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:var(--save-soft);border-radius:999px;padding:11px 16px;
+  }
+  .savebar .k{font-size:.82rem;font-weight:600;color:var(--save)}
+  .savebar .v{font-family:var(--mono);font-size:1.05rem;font-weight:600;color:var(--save);font-variant-numeric:tabular-nums}
+
+  /* ---- flow ---- */
+  .flow{display:flex;flex-direction:column;align-items:center;gap:0;padding:2px 0 0}
+  .flow .amt{font-family:var(--mono);font-size:1.12rem;font-weight:600;font-variant-numeric:tabular-nums}
+  .flow .amt.dim{color:var(--muted);font-weight:500}
+  .flow .step{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 0}
+  .flow .arrow{color:var(--muted-2);font-size:.95rem;line-height:1}
+  .flow .tagline{font-size:.78rem;font-weight:600;color:var(--save);font-family:var(--sans)}
+  .note{
+    font-size:.79rem;color:var(--muted);background:var(--surface-2);
+    border:1px solid var(--line);border-radius:var(--radius-sm);padding:11px 13px;line-height:1.45;
+  }
+  .note b{color:var(--ink);font-family:var(--mono);font-weight:600}
+
+  /* ---- actions ---- */
+  .actions{display:grid;grid-template-columns:1fr;gap:12px}
+  .actions.two{grid-template-columns:1fr 1fr}
+  .actions.three{grid-template-columns:repeat(3,1fr);column-gap:8px;row-gap:12px}
+  .actions.three .btn{font-size:.88rem;padding-inline:4px;letter-spacing:-.02em}
+  .actions.three .btn.primary{grid-column:1 / -1;font-size:.95rem}
+  .card-actions{display:grid;grid-template-columns:1fr;padding-top:0;gap:12px}
+  .card-actions.two{grid-template-columns:1fr 1fr}
+  .card-actions.three{grid-template-columns:repeat(3,1fr);column-gap:8px;row-gap:12px}
+  .card-actions.three .btn{font-size:.88rem;padding-inline:4px;letter-spacing:-.02em}
+  .card-actions.three .btn.primary{grid-column:1 / -1;font-size:.95rem}
+  .card-actions .btn{width:100%}
+  .card-actions .btn.primary{background:var(--accent);color:var(--on-accent)}
+
+  /* ---- 최근 계산 목록 ---- */
+  .histlist{display:flex;flex-direction:column;gap:0}
+  .histrow{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    padding:8px 0;border-bottom:1px solid var(--line);
+  }
+  /* "보내기"를 누르면 펼쳐지는 선택 줄 — 행 전체 폭을 쓰고 오른쪽에 정렬된다 */
+  .histmenu{display:flex;gap:5px;flex-basis:100%;justify-content:flex-end;flex-wrap:wrap}
+  .histsend.open{background:var(--accent);color:var(--on-accent)}
+  .histsend.open:hover{background:var(--accent)}
+  .histrow:last-child{border-bottom:0}
+  .histmain{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;align-items:flex-start;text-align:left}
+  .histpick{
+    appearance:none;background:transparent;border:0;cursor:pointer;
+    font:inherit;color:inherit;margin:0;padding:4px 6px;border-radius:12px;
+    transition:background .12s;
+  }
+  .histpick:hover{background:var(--surface-2)}
+  .histpick:active{background:var(--line-strong)}
+  .histpick:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .hexpr{font-family:var(--mono);font-size:.73rem;color:var(--muted-2);overflow-wrap:anywhere}
+  .hval{
+    font-family:var(--mono);font-size:1.02rem;font-weight:600;
+    font-variant-numeric:tabular-nums;color:var(--ink);overflow-wrap:anywhere;
+  }
+  .histtools{display:flex;gap:6px;align-items:center;flex:none}
+  .histactions{display:flex;gap:5px;flex:none}
+  .histdel{color:var(--danger)}
+  .histdel:hover{background:var(--danger-soft)}
+  .histsend{
+    flex:none;appearance:none;cursor:pointer;white-space:nowrap;
+    background:var(--surface-2);border:0;border-radius:999px;
+    color:var(--tint);font-family:var(--sans);font-size:.73rem;font-weight:700;
+    padding:6px 9px;min-height:34px;letter-spacing:-.02em;transition:border-color .12s;
+  }
+  .histsend:hover{background:var(--line-strong)}
+  .histsend:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .histempty{font-size:.8rem;color:var(--muted-2);padding:4px 0}
 
   /* ---- 탭 순서 변경 ---- */
   .orderbar{display:flex;justify-content:center}
   .ordertoggle{
     appearance:none;cursor:pointer;background:transparent;border:0;
-    font:inherit;font-size:.82rem;font-weight:600;color:var(--ink-3);
-    padding:8px 14px;border-radius:10px;
+    color:var(--muted-2);font-family:var(--sans);font-size:.8rem;font-weight:600;
+    padding:8px 14px;border-radius:10px;transition:color .12s;
   }
   .ordertoggle:hover{color:var(--ink)}
   .ordertoggle[aria-expanded="true"]{color:var(--ink)}
-  .order-card{gap:12px}
-  .order-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .mini-btn{
-    appearance:none;cursor:pointer;
-    background:var(--surface-2);border:1px solid transparent;border-radius:999px;
-    color:var(--ink-2);font:inherit;font-size:.8rem;font-weight:600;
-    padding:6px 14px;min-height:34px;
-  }
-  .mini-btn:hover{border-color:var(--line-strong);color:var(--ink)}
+  .ordertoggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .orderlist{display:flex;flex-direction:column;gap:0}
   .orderrow{
     display:flex;align-items:center;justify-content:space-between;gap:10px;
-    padding:8px 0;border-bottom:1px solid var(--line);
+    padding:7px 0;border-bottom:1px solid var(--line);
   }
   .orderrow:last-child{border-bottom:0}
-  .ordername{display:flex;align-items:baseline;gap:9px;min-width:0}
-  .ordernum{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);flex:none}
-  .orderlabel{font-size:.95rem;font-weight:600}
+  .ordername{display:flex;align-items:baseline;gap:8px;min-width:0}
+  .ordernum{font-family:var(--mono);font-size:.74rem;color:var(--muted-2);flex:none}
+  .orderlabel{font-size:.94rem;font-weight:600}
   .orderbtns{display:flex;gap:6px;flex:none}
   .orderbtn{
-    appearance:none;cursor:pointer;width:42px;height:42px;padding:0;
-    border:1px solid transparent;border-radius:50%;
-    background:var(--surface-2);color:var(--ink-2);
-    font-size:1rem;font-weight:700;
+    appearance:none;cursor:pointer;width:42px;height:42px;border-radius:50%;padding:0;
+    background:var(--surface-2);border:0;color:var(--muted);
+    font-size:1rem;font-weight:700;transition:background .12s,color .12s;
   }
-  .orderbtn:hover:not(:disabled){border-color:var(--accent-line)}
-  .orderbtn:disabled{opacity:.3;cursor:default;color:var(--ink-3)}
-  .orderhint{margin:0;font-size:.78rem;color:var(--ink-3)}
+  .orderbtn:hover:not(:disabled){background:var(--line-strong);color:var(--ink)}
+  .orderbtn:disabled{opacity:.3;cursor:default;color:var(--muted)}
+  .orderbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .orderhint{font-size:.76rem;color:var(--muted-2);margin:0}
 
-  .toast{
-    position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom, 0px));
-    transform:translateX(-50%) translateY(8px);
-    background:var(--ink);color:var(--surface-solid);font-size:.88rem;
-    padding:12px 20px;border-radius:999px;
-    opacity:0;pointer-events:none;transition:opacity .18s ease, transform .18s ease;z-index:10;
+  /* ---- 환율 ---- */
+  .fxrow{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end}
+  .fxsel{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .fxsel-head{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
+  .fxsel label{font-size:.84rem;font-weight:600;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .favbtn{
+    flex:none;appearance:none;cursor:pointer;padding:0;
+    width:26px;height:24px;border:0;border-radius:6px;background:transparent;
+    color:var(--line-strong);font-size:1.05rem;line-height:1;transition:color .12s;
   }
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .favbtn:hover{color:var(--muted-2)}
+  .favbtn[aria-pressed="true"]{color:#D8A51D}
+  .favbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .fxsel select{
+    width:100%;appearance:none;cursor:pointer;
+    background:var(--surface-2);border:1px solid transparent;border-radius:var(--radius-sm);
+    color:var(--ink);font-family:var(--sans);font-size:.92rem;font-weight:600;
+    padding:12px 10px;min-height:50px;
+    background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);
+    background-position:calc(100% - 15px) 50%,calc(100% - 10px) 50%;
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+    padding-right:28px;text-overflow:ellipsis;
+  }
+  .fxsel select:focus{outline:none;border-color:var(--accent-line);background:var(--surface-solid)}
+  .fxswap{
+    flex:none;appearance:none;cursor:pointer;
+    width:44px;height:50px;border-radius:999px;
+    background:var(--surface-2);border:0;color:var(--tint);
+    font-size:1.1rem;font-weight:700;padding:0;transition:background .12s;
+  }
+  .fxswap:hover{background:var(--line-strong)}
+  .fxswap:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .fxmeta{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    font-family:var(--mono);font-size:.76rem;color:var(--muted);
+  }
+  .fxmeta .rate{min-width:0;overflow-wrap:anywhere}
+  .fxmeta .rate b{color:var(--ink);font-weight:600}
+  .fxstamp{font-size:.72rem;color:var(--muted-2);font-family:var(--mono)}
+  .fxstamp .live{color:var(--tint);font-weight:700}
+  .btn{
+    appearance:none;cursor:pointer;min-height:52px;border-radius:999px;
+    font-family:var(--sans);font-size:.95rem;font-weight:600;
+    border:0;background:var(--surface-2);color:var(--muted);
+    transition:background .12s,color .12s,transform .08s;
+  }
+  .btn:hover{color:var(--ink)}
+  .btn:active{transform:scale(.99)}
+  .btn.primary{
+    background:var(--accent);color:var(--on-accent);font-weight:700;
+    box-shadow:0 2px 10px rgba(22,24,29,.12);
+  }
+  .btn.primary:hover{color:var(--on-accent)}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn:disabled:hover{color:var(--muted)}
 
-  .install{
-    display:flex;align-items:center;justify-content:space-between;gap:12px;
-    background:var(--accent-soft);border:1px solid var(--accent);
-    border-radius:var(--radius-sm);padding:12px 14px;font-size:.88rem;color:var(--accent);
-  }
-  .install button{
-    font:inherit;font-weight:700;border:0;border-radius:9px;padding:9px 14px;
-    background:var(--accent);color:var(--accent-ink);cursor:pointer;flex:none;
+  .copybox{
+    width:100%;font-family:var(--mono);font-size:.82rem;line-height:1.6;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);
+    padding:11px 13px;color:var(--ink);resize:none;
   }
 
-  .foot{font-size:.78rem;color:var(--ink-3);text-align:center}
-
-  @media (max-width:420px){
-    .row{grid-template-columns:1fr}
-    .value{font-size:2rem}
-  }
-  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
 </style>
 </head>
 <body>
-
-<div class="wrap">
-  <div class="install" id="installBar" hidden>
-    <span>홈 화면에 앱으로 설치할 수 있습니다.</span>
-    <button type="button" id="installBtn">설치</button>
+<div class="app">
+  <div class="tabrow">
+    <div class="tabs" role="tablist" aria-label="계산 모드">
+      <button class="tab" id="tab-discount" role="tab" aria-selected="true" aria-controls="panel-discount">할인계산</button>
+      <button class="tab" id="tab-calc" role="tab" aria-selected="false" aria-controls="panel-calc">일반계산</button>
+      <button class="tab" id="tab-fx" role="tab" aria-selected="false" aria-controls="panel-fx">환율</button>
+      <button class="tab" id="tab-reverse" role="tab" aria-selected="false" aria-controls="panel-reverse">원금역산</button>
+    </div>
+    <button class="themebtn" id="theme-btn" type="button" aria-label="배경 모드 전환"></button>
   </div>
 
-  <div class="topbar">
-    <div class="tabs" role="tablist" aria-label="계산 종류">
-      <button id="tabTime" type="button" role="tab" aria-selected="true" aria-controls="panelTime">시간 계산</button>
-      <button id="tabDate" type="button" role="tab" aria-selected="false" aria-controls="panelDate">날짜 계산</button>
-      <button id="tabDiff" type="button" role="tab" aria-selected="false" aria-controls="panelDiff">차이 계산</button>
+  <!-- ============ 할인 계산 ============ -->
+  <div id="panel-discount" role="tabpanel" aria-labelledby="tab-discount" style="display:flex;flex-direction:column;gap:14px">
+    <div class="card">
+      <div class="field">
+        <label for="d-amount">원금</label>
+        <div class="inputwrap">
+          <input id="d-amount" type="text" inputmode="decimal" data-kind="amount" data-name="원금"
+                 autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="0">
+          <span class="unit">원</span>
+          <button type="button" class="clearbtn" data-clear="d-amount" aria-label="원금 지우기" hidden>&#215;</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="d-rate">할인율</label>
+        <div class="inputwrap">
+          <input id="d-rate" type="text" inputmode="decimal" data-kind="rate" data-name="할인율"
+                 autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="0">
+          <span class="unit">%</span>
+          <button type="button" class="clearbtn" data-clear="d-rate" aria-label="할인율 지우기" hidden>&#215;</button>
+        </div>
+        <div class="quick" id="d-quick"></div>
+      </div>
+
+      <div class="chain-row">
+        <input type="checkbox" id="d-chain">
+        <label for="d-chain">추가 할인(연속 할인) 적용</label>
+      </div>
+
+      <div class="field" id="d-chain-field" hidden>
+        <label for="d-rate2">추가 할인율 <span style="font-weight:400">— 1차 할인된 금액에 적용</span></label>
+        <div class="inputwrap">
+          <input id="d-rate2" type="text" inputmode="decimal" data-kind="rate" data-name="추가 할인율"
+                 autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="0">
+          <span class="unit">%</span>
+          <button type="button" class="clearbtn" data-clear="d-rate2" aria-label="추가 할인율 지우기" hidden>&#215;</button>
+        </div>
+      </div>
+
+      <div class="hint" id="d-hint"></div>
+
+      <div class="field">
+        <div class="pad-head">
+          <button class="paste-btn" id="d-paste" type="button">붙여넣기</button>
+          <span class="target" id="d-pad-target">원금</span>
+        </div>
+        <div class="keypad" id="d-keypad"></div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn" id="d-reset" type="button">전체 초기화</button>
+      </div>
     </div>
-    <button class="theme-btn" id="themeBtn" type="button" aria-label="화면 테마 전환">◐</button>
+
+    <div class="card">
+      <div class="total">
+        <span class="k">최종 결제금액</span>
+        <span class="v" id="d-final">—</span>
+      </div>
+
+      <div class="savebar">
+        <span class="k">할인금액 (절약)</span>
+        <span class="v" id="d-savebar">—</span>
+      </div>
+
+      <div class="rows">
+        <div class="row"><span class="k">원금</span><span class="v" id="d-r-amount">—</span></div>
+        <div class="row"><span class="k">할인율</span><span class="v" id="d-r-rate">—</span></div>
+        <div class="row save"><span class="k">할인금액</span><span class="v" id="d-r-disc">—</span></div>
+        <div class="row" style="border-bottom:0"><span class="k">실질 할인율</span><span class="v" id="d-r-eff">—</span></div>
+      </div>
+
+      <div class="flow" id="d-flow"></div>
+      <div class="note" id="d-note" hidden></div>
+    </div>
+
+    <div class="actions three">
+      <button class="btn primary" id="d-copy" type="button">결과 복사</button>
+      <button class="btn" id="d-tocalc" type="button">일반 계산</button>
+      <button class="btn" id="d-tofx" type="button">환율</button>
+      <button class="btn" id="d-torev" type="button">원금 역산</button>
+    </div>
+    <textarea class="copybox" id="d-copybox" rows="4" readonly hidden></textarea>
   </div>
 
-  <section class="card" id="panelTime" role="tabpanel" aria-labelledby="tabTime">
-    <div class="field">
-      <label class="lab" for="baseTime">기준 시간</label>
-      <div class="amount">
-        <input type="text" id="baseTime" inputmode="none" maxlength="5" autocomplete="off" aria-describedby="timeError">
-        <button type="button" class="side-btn" id="clearBaseTime">초기화</button>
+  <!-- ============ 일반 계산 ============ -->
+  <div id="panel-calc" role="tabpanel" aria-labelledby="tab-calc" hidden style="flex-direction:column;gap:12px">
+    <div class="card">
+      <div class="calcdisp">
+        <span class="expr" id="c-expr">&nbsp;</span>
+        <span class="val" id="c-entry">0</span>
       </div>
-    </div>
 
-    <div class="field">
-      <span class="lab">연산</span>
-      <div class="seg" id="timeOp">
-        <button type="button" data-op="+" aria-pressed="true" aria-label="더하기">+</button>
-        <button type="button" data-op="-" aria-pressed="false" aria-label="빼기">−</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="lab" for="addAmount">더하거나 뺄 시간</label>
-      <div class="amount">
-        <input type="text" id="addAmount" inputmode="none" maxlength="5" autocomplete="off" aria-describedby="timeError">
-        <button type="button" class="side-btn" id="clearAmount">초기화</button>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="calc" type="button" id="calcTime">계산</button>
-      <div class="subactions three">
-        <button class="ghost" type="button" id="nowTime">현재 시간</button>
-        <button class="ghost" type="button" id="openAlarm">Alarm</button>
-        <button class="ghost" type="button" id="resetTime">전체 초기화</button>
-      </div>
-    </div>
-
-    <div class="error" id="timeError" role="alert" hidden></div>
-
-    <div class="result">
-      <div class="result-main">
-        <div class="value dim" id="timeValue">계산 결과가 여기에 표시됩니다</div>
-        <div class="res-btns">
-          <button class="copy use" type="button" id="useTime" hidden aria-label="결과값을 기준 시간으로 이동">기준값</button>
-          <button class="copy" type="button" id="copyTime" hidden>복사</button>
-        </div>
-      </div>
-      <div class="meta" id="timeMeta"></div>
-    </div>
-  </section>
-
-  <section class="card" id="panelDate" role="tabpanel" aria-labelledby="tabDate" hidden>
-    <div class="field">
-      <label class="lab" for="baseDate">기준 날짜</label>
-      <div class="amount">
-        <input type="text" id="baseDate" inputmode="none" maxlength="12" autocomplete="off" aria-describedby="dateError">
-        <button type="button" class="side-btn cal-open" id="calBtn" aria-label="달력에서 선택" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M8 3v4M16 3v4M3 10h18"></path></svg></button>
-      </div>
-      <div class="cal" id="cal" hidden></div>
-    </div>
-
-    <div class="field">
-      <span class="lab">연산</span>
-      <div class="seg" id="dateOp">
-        <button type="button" data-op="+" aria-pressed="true" aria-label="더하기">+</button>
-        <button type="button" data-op="-" aria-pressed="false" aria-label="빼기">−</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <span class="lab">더하거나 뺄 기간</span>
-      <div class="amount amount-spans">
-        <div class="spans">
-          <label><span>년</span><input type="text" id="spanYear" inputmode="none" maxlength="4" autocomplete="off" aria-describedby="dateError"></label>
-          <label><span>개월</span><input type="text" id="spanMonth" inputmode="none" maxlength="4" autocomplete="off" aria-describedby="dateError"></label>
-          <label><span>주</span><input type="text" id="spanWeek" inputmode="none" maxlength="4" autocomplete="off" aria-describedby="dateError"></label>
-          <label><span>일</span><input type="text" id="spanDay" inputmode="none" maxlength="5" autocomplete="off" aria-describedby="dateError"></label>
-        </div>
-        <button type="button" class="side-btn" id="clearSpans">초기화</button>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="calc" type="button" id="calcDate">계산</button>
-      <div class="subactions">
-        <button class="ghost" type="button" id="nowDate">오늘 날짜</button>
-        <button class="ghost" type="button" id="resetDate">전체 초기화</button>
-      </div>
-    </div>
-
-    <div class="error" id="dateError" role="alert" hidden></div>
-
-    <div class="result">
-      <div class="result-main">
-        <div class="value dim" id="dateValue">계산 결과가 여기에 표시됩니다</div>
-        <div class="res-btns">
-          <button class="copy use" type="button" id="useDate" hidden aria-label="결과값을 기준 날짜로 이동">기준값</button>
-          <button class="copy" type="button" id="copyDate" hidden>복사</button>
-        </div>
-      </div>
-      <div class="meta" id="dateMeta"></div>
-    </div>
-  </section>
-
-  <div class="stack" id="panelDiff" role="tabpanel" aria-labelledby="tabDiff" hidden>
-
-    <div class="seg modeseg" id="diffMode">
-      <button type="button" data-mode="time" aria-pressed="true">시간 차이</button>
-      <button type="button" data-mode="date" aria-pressed="false">날짜 차이</button>
-    </div>
-
-    <section class="card" id="diffTimeCard">
       <div class="field">
-        <div class="pair">
-          <label><span>시작</span><input type="text" id="diffT1" inputmode="none" maxlength="5" autocomplete="off" aria-describedby="diffTimeError"></label>
-          <label><span>종료</span><input type="text" id="diffT2" inputmode="none" maxlength="5" autocomplete="off" aria-describedby="diffTimeError"></label>
+        <div class="pad-head">
+          <button class="paste-btn" id="c-paste" type="button">붙여넣기</button>
+          <span class="histtools">
+            <button class="paste-btn" id="c-pct" type="button" aria-label="백분율">%</button>
+            <button class="paste-btn" id="c-sign" type="button" aria-label="부호 바꾸기">+/−</button>
+          </span>
         </div>
+        <div class="keypad calcpad" id="c-keypad"></div>
       </div>
 
-      <div class="actions">
-        <button class="calc" type="button" id="calcDiffTime">계산</button>
-        <div class="subactions">
-          <button class="ghost" type="button" id="nowDiffTime">현재 시간</button>
-          <button class="ghost" type="button" id="clearDiffTime">초기화</button>
-        </div>
+      <div class="card-actions three">
+        <button class="btn" id="c-send-d" type="button">할인 계산</button>
+        <button class="btn" id="c-send-f" type="button">환율</button>
+        <button class="btn" id="c-send-r" type="button">원금 역산</button>
+        <button class="btn primary" id="c-copy" type="button">결과 복사</button>
       </div>
+      <textarea class="copybox" id="c-copybox" rows="2" readonly hidden></textarea>
+    </div>
 
-      <div class="error" id="diffTimeError" role="alert" hidden></div>
-
-      <div class="result">
-        <div class="result-main">
-          <div class="value dim" id="diffTimeValue">계산 결과가 여기에 표시됩니다</div>
-          <button class="copy" type="button" id="copyDiffTime" hidden>복사</button>
-        </div>
-        <div class="meta" id="diffTimeMeta"></div>
+    <div class="card">
+      <div class="pad-head">
+        <span>최근 계산</span>
+        <span class="histtools">
+          <button class="paste-btn" id="c-hist-edit" type="button" hidden>편집</button>
+          <button class="paste-btn" id="c-hist-clear" type="button" hidden>목록 지우기</button>
+        </span>
       </div>
-    </section>
+      <div class="histlist" id="c-history"></div>
+    </div>
+  </div>
 
-    <section class="card" id="diffDateCard" hidden>
+  <!-- ============ 환율 ============ -->
+  <div id="panel-fx" role="tabpanel" aria-labelledby="tab-fx" hidden style="flex-direction:column;gap:12px">
+    <div class="card">
       <div class="field">
-        <label class="dline"><span>시작</span>
-          <div class="amount">
-            <input type="text" id="diffD1" inputmode="none" maxlength="12" autocomplete="off" aria-describedby="diffDateError">
-            <button type="button" class="side-btn cal-open" id="calBtn1" aria-label="달력에서 선택" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M8 3v4M16 3v4M3 10h18"></path></svg></button>
+        <label for="f-amount">금액</label>
+        <div class="inputwrap">
+          <input id="f-amount" type="text" inputmode="decimal" data-kind="decimal" data-name="금액"
+                 autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="0">
+          <span class="unit" id="f-unit">USD</span>
+          <button type="button" class="clearbtn" data-clear="f-amount" aria-label="금액 지우기" hidden>&#215;</button>
+        </div>
+      </div>
+
+      <div class="fxrow">
+        <div class="fxsel">
+          <div class="fxsel-head">
+            <label for="f-from">보내는 통화</label>
+            <button class="favbtn" id="f-from-fav" type="button" aria-pressed="false">&#9734;</button>
           </div>
-        </label>
-        <div class="cal" id="cal1" hidden></div>
-        <label class="dline"><span>종료</span>
-          <div class="amount">
-            <input type="text" id="diffD2" inputmode="none" maxlength="12" autocomplete="off" aria-describedby="diffDateError">
-            <button type="button" class="side-btn cal-open" id="calBtn2" aria-label="달력에서 선택" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M8 3v4M16 3v4M3 10h18"></path></svg></button>
+          <select id="f-from"></select>
+        </div>
+        <button class="fxswap" id="f-swap" type="button" aria-label="통화 서로 바꾸기">&#8646;</button>
+        <div class="fxsel">
+          <div class="fxsel-head">
+            <label for="f-to">받는 통화</label>
+            <button class="favbtn" id="f-to-fav" type="button" aria-pressed="false">&#9734;</button>
           </div>
-        </label>
-        <div class="cal" id="cal2" hidden></div>
+          <select id="f-to"></select>
+        </div>
+      </div>
+
+      <div class="total">
+        <span class="k" id="f-result-label">환산 금액</span>
+        <span class="v" id="f-result">—</span>
+      </div>
+
+      <div class="fxmeta">
+        <span class="rate" id="f-rate">환율 불러오는 중…</span>
+        <button class="paste-btn" id="f-refresh" type="button">새로고침</button>
+      </div>
+      <p class="fxstamp" id="f-stamp"></p>
+      <div class="hint" id="f-hint"></div>
+
+      <div class="field">
+        <div class="pad-head">
+          <button class="paste-btn" id="f-paste" type="button">붙여넣기</button>
+          <span class="target">금액</span>
+        </div>
+        <div class="keypad" id="f-keypad"></div>
+      </div>
+
+      <div class="card-actions two">
+        <button class="btn" id="f-save" type="button">목록에 저장</button>
+        <button class="btn primary" id="f-copy" type="button">결과 복사</button>
+      </div>
+      <textarea class="copybox" id="f-copybox" rows="2" readonly hidden></textarea>
+    </div>
+
+    <div class="card">
+      <div class="pad-head">
+        <span>최근 환율 계산</span>
+        <span class="histtools">
+          <button class="paste-btn" id="f-hist-edit" type="button" hidden>편집</button>
+          <button class="paste-btn" id="f-hist-clear" type="button" hidden>목록 지우기</button>
+        </span>
+      </div>
+      <div class="histlist" id="f-history"></div>
+    </div>
+  </div>
+
+  <!-- ============ 원금 역산 ============ -->
+  <div id="panel-reverse" role="tabpanel" aria-labelledby="tab-reverse" hidden style="flex-direction:column;gap:14px">
+    <div class="card">
+      <div class="field">
+        <label for="r-final">최종 결제금액 <span style="font-weight:400">— 할인이 적용된 금액</span></label>
+        <div class="inputwrap">
+          <input id="r-final" type="text" inputmode="decimal" data-kind="amount" data-name="최종 결제금액"
+                 autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="0">
+          <span class="unit">원</span>
+          <button type="button" class="clearbtn" data-clear="r-final" aria-label="최종 결제금액 지우기" hidden>&#215;</button>
+        </div>
       </div>
 
       <div class="field">
-        <span class="lab">결과 단위</span>
-        <div class="units" id="diffUnits">
-          <button type="button" data-unit="day" aria-pressed="true">일</button>
-          <button type="button" data-unit="week" aria-pressed="false">주</button>
-          <button type="button" data-unit="month" aria-pressed="false">개월</button>
-          <button type="button" data-unit="year" aria-pressed="false">년</button>
+        <label for="r-rate">적용된 할인율</label>
+        <div class="inputwrap">
+          <input id="r-rate" type="text" inputmode="decimal" data-kind="rate" data-name="할인율"
+                 autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="0">
+          <span class="unit">%</span>
+          <button type="button" class="clearbtn" data-clear="r-rate" aria-label="할인율 지우기" hidden>&#215;</button>
         </div>
+        <div class="quick" id="r-quick"></div>
       </div>
 
-      <div class="actions">
-        <button class="calc" type="button" id="calcDiffDate">계산</button>
-        <div class="subactions">
-          <button class="ghost" type="button" id="todayDiffDate">오늘 날짜</button>
-          <button class="ghost" type="button" id="clearDiffDate">초기화</button>
+      <div class="hint" id="r-hint"></div>
+
+      <div class="field">
+        <div class="pad-head">
+          <button class="paste-btn" id="r-paste" type="button">붙여넣기</button>
+          <span class="target" id="r-pad-target">최종 결제금액</span>
         </div>
+        <div class="keypad" id="r-keypad"></div>
       </div>
 
-      <div class="error" id="diffDateError" role="alert" hidden></div>
-
-      <div class="result">
-        <div class="result-main">
-          <div class="value dim" id="diffDateValue">계산 결과가 여기에 표시됩니다</div>
-          <button class="copy" type="button" id="copyDiffDate" hidden>복사</button>
-        </div>
-        <div class="meta" id="diffDateMeta"></div>
+      <div class="card-actions">
+        <button class="btn" id="r-reset" type="button">전체 초기화</button>
       </div>
-    </section>
+    </div>
+
+    <div class="card">
+      <div class="total">
+        <span class="k">할인 전 원금</span>
+        <span class="v" id="r-origin">—</span>
+      </div>
+
+      <div class="savebar">
+        <span class="k">할인받은 금액</span>
+        <span class="v" id="r-savebar">—</span>
+      </div>
+
+      <div class="rows">
+        <div class="row"><span class="k">최종 결제금액</span><span class="v" id="r-r-final">—</span></div>
+        <div class="row"><span class="k">할인율</span><span class="v" id="r-r-rate">—</span></div>
+        <div class="row save" style="border-bottom:0"><span class="k">할인금액</span><span class="v" id="r-r-disc">—</span></div>
+      </div>
+
+      <div class="flow" id="r-flow"></div>
+    </div>
+
+    <div class="actions three">
+      <button class="btn primary" id="r-copy" type="button">결과 복사</button>
+      <button class="btn" id="r-todisc" type="button">할인 계산</button>
+      <button class="btn" id="r-tocalc" type="button">일반 계산</button>
+      <button class="btn" id="r-tofx" type="button">환율</button>
+    </div>
+    <textarea class="copybox" id="r-copybox" rows="4" readonly hidden></textarea>
   </div>
 
-  <section class="keypad" id="keypad" aria-label="숫자 키패드">
-    <div class="kp-grid" id="kpGrid">
-        <button type="button" data-k="1">1</button>
-        <button type="button" data-k="2">2</button>
-        <button type="button" data-k="3">3</button>
-        <button type="button" data-k="4">4</button>
-        <button type="button" data-k="5">5</button>
-        <button type="button" data-k="6">6</button>
-        <button type="button" data-k="7">7</button>
-        <button type="button" data-k="8">8</button>
-        <button type="button" data-k="9">9</button>
-        <div class="kp-move">
-          <button type="button" data-k="prev" aria-label="이전 칸으로 이동"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
-          <button type="button" data-k="next" aria-label="다음 칸으로 이동"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
-        </div>
-        <button type="button" data-k="0">0</button>
-        <button type="button" class="kp-back" data-k="back" aria-label="한 글자 지우기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 5H10l-6 7 6 7h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"></path><path d="M17.5 9.5l-5 5M12.5 9.5l5 5"></path></svg></button>
-    </div>
-  </section>
-
-  <section class="hist">
-    <div class="hist-head">
-      <h2>최근 계산</h2>
-      <button class="hist-clear" type="button" id="clearHist" hidden>전체 삭제</button>
-    </div>
-    <div class="empty" id="histEmpty">아직 기록이 없습니다. 계산하면 최근 10개까지 여기에 쌓입니다.</div>
-    <ol id="histList"></ol>
-  </section>
-
-
+  <!-- ============ 탭 순서 ============ -->
   <div class="orderbar">
-    <button class="ordertoggle" id="orderToggle" type="button" aria-expanded="false" aria-controls="orderPanel">탭 순서 변경</button>
+    <button class="ordertoggle" id="order-toggle" type="button"
+            aria-expanded="false" aria-controls="order-panel">탭 순서 변경</button>
   </div>
 
-  <section class="card order-card" id="orderPanel" hidden>
-    <div class="order-head">
-      <span class="lab">탭 순서</span>
-      <button class="mini-btn" type="button" id="orderReset">기본값</button>
+  <div class="card" id="order-panel" hidden>
+    <div class="pad-head">
+      <span>탭 순서</span>
+      <button class="paste-btn" id="order-reset" type="button">기본값</button>
     </div>
-    <div class="orderlist" id="orderList"></div>
+    <div class="orderlist" id="order-list"></div>
     <p class="orderhint">위에 있을수록 화면 왼쪽에 표시됩니다.</p>
-  </section>
+  </div>
 </div>
-
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function(){
   "use strict";
 
-  var WEEKDAYS = ["일","월","화","수","목","금","토"];
-
+  var QUICK = [5,10,15,20,25,30,40,50];
   var $ = function(id){ return document.getElementById(id); };
 
-  /* ---------- 화면 확대 방지 (더블탭 · 두 손가락 벌리기) ---------- */
-  ["gesturestart", "gesturechange", "gestureend"].forEach(function(ev){
-    document.addEventListener(ev, function(e){ e.preventDefault(); }, {passive: false});
+  var raf = window.requestAnimationFrame
+    ? function(fn){ window.requestAnimationFrame(fn); }
+    : function(fn){ setTimeout(fn, 16); };
+
+  /* ---------- number helpers ---------- */
+  function digitsOnly(s){ return String(s == null ? "" : s).replace(/[^0-9]/g, ""); }
+  function decimalOnly(s){
+    var t = String(s == null ? "" : s).replace(/[^0-9.]/g, "");
+    var i = t.indexOf(".");
+    if (i !== -1) t = t.slice(0, i + 1) + t.slice(i + 1).replace(/\./g, "");
+    return t;
+  }
+  /* 붙여넣기용 — 문장 안에서 숫자 "하나"만 골라낸다.
+     예전에는 텍스트의 모든 숫자를 이어붙여, 환율 결과를 복사해 붙여넣으면
+     10,000,007,409,610.074096 같은 값이 만들어졌다. */
+  function pickNumber(text){
+    var s = String(text == null ? "" : text);
+    /* "=" 또는 "→" 뒤에 오는 숫자가 결과값이다 (계산기 식, 환율 변환 문장) */
+    var m = s.match(/[=→⇒]\s*(-?\d[\d,]*(?:\.\d+)?)/);
+    if (m) return m[1];
+    var f = s.match(/-?\d[\d,]*(?:\.\d+)?/);
+    return f ? f[0] : "";
+  }
+
+  function group(s){
+    var d = digitsOnly(s);
+    if (d === "") return "";
+    d = d.replace(/^0+(?=\d)/, "");
+    return d.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  /* 소수점을 허용하는 금액 서식 — 환율 탭처럼 19.99 같은 값이 들어오는 칸에 쓴다. */
+  function groupDecimal(s){
+    var t = decimalOnly(s);
+    if (t === "") return "";
+    var parts = t.split(".");
+    var ip = parts[0].replace(/^0+(?=\d)/, "");
+    if (ip === "") ip = "0";
+    ip = ip.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.length > 1 ? ip + "." + parts[1] : ip;
+  }
+  function won(n){
+    if (!isFinite(n)) return "—";
+    return Math.round(n).toLocaleString("ko-KR") + "원";
+  }
+  function wonBig(n){
+    if (!isFinite(n)) return "—";
+    return Math.round(n).toLocaleString("ko-KR") + '<span class="won">원</span>';
+  }
+  function pct(n){
+    if (!isFinite(n)) return "—";
+    return (Math.round(n * 100) / 100).toLocaleString("ko-KR") + "%";
+  }
+
+  function fireInput(el){
+    var ev;
+    try { ev = new Event("input", { bubbles: true }); }
+    catch(e){ ev = document.createEvent("Event"); ev.initEvent("input", true, false); }
+    el.dispatchEvent(ev);
+  }
+
+  /* Formatting is never applied inside the input handler: rewriting el.value while the
+     browser/IME is still processing the keystroke can swallow the character. Calculation
+     runs immediately from the raw text; the comma pass is deferred to the next frame. */
+  function bindAmount(el, onChange, formatter){
+    var composing = false, queued = false;
+    var fmt = formatter || group;
+
+    function applyFormat(){
+      queued = false;
+      if (composing) return;
+      var before = el.value;
+      var formatted = fmt(before);
+      if (formatted === before) return;
+
+      var caret = el.selectionStart == null ? before.length : el.selectionStart;
+      var digitsBefore = digitsOnly(before.slice(0, caret)).length;
+      el.value = formatted;
+
+      var pos = formatted.length, seen = 0;
+      if (digitsBefore <= 0){
+        pos = 0;
+      } else {
+        for (var k = 0; k < formatted.length; k++){
+          var c = formatted.charAt(k);
+          if (c >= "0" && c <= "9") seen++;
+          if (seen >= digitsBefore){ pos = k + 1; break; }
+        }
+      }
+      if (document.activeElement === el){
+        try { el.setSelectionRange(pos, pos); } catch(e){}
+      }
+      onChange();
+    }
+
+    function schedule(){
+      onChange();
+      if (composing || queued) return;
+      queued = true;
+      raf(applyFormat);
+    }
+
+    el.addEventListener("compositionstart", function(){ composing = true; });
+    el.addEventListener("compositionend", function(){ composing = false; schedule(); });
+    el.addEventListener("input", schedule);
+    el.addEventListener("change", schedule);
+    el.addEventListener("blur", function(){ composing = false; queued = false; applyFormat(); });
+  }
+
+  function bindRate(el, onChange){
+    var composing = false, queued = false;
+
+    function applyClean(){
+      queued = false;
+      if (composing) return;
+      var v = decimalOnly(el.value);
+      if (v === el.value) return;
+      var caret = el.selectionStart;
+      var pos = caret == null ? v.length : Math.min(caret, v.length);
+      el.value = v;
+      if (document.activeElement === el){
+        try { el.setSelectionRange(pos, pos); } catch(e){}
+      }
+      onChange();
+    }
+
+    function schedule(){
+      onChange();
+      if (composing || queued) return;
+      queued = true;
+      raf(applyClean);
+    }
+
+    el.addEventListener("compositionstart", function(){ composing = true; });
+    el.addEventListener("compositionend", function(){ composing = false; schedule(); });
+    el.addEventListener("input", schedule);
+    el.addEventListener("change", schedule);
+    el.addEventListener("blur", function(){ composing = false; queued = false; applyClean(); });
+  }
+
+  /* ---------- quick rate chips ---------- */
+  function buildQuick(host, input, onChange){
+    QUICK.forEach(function(r){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = r + "%";
+      b.setAttribute("aria-pressed", "false");
+      b.dataset.rate = String(r);
+      b.addEventListener("click", function(){ input.value = String(r); onChange(); });
+      host.appendChild(b);
+    });
+  }
+  function syncQuick(host, value){
+    var chips = host.querySelectorAll(".chip");
+    for (var i = 0; i < chips.length; i++){
+      chips[i].setAttribute("aria-pressed", Number(chips[i].dataset.rate) === value ? "true" : "false");
+    }
+  }
+
+  /* ---------- on-screen keypad ---------- */
+  var KEYS = [
+    { t:"7" }, { t:"8" }, { t:"9" }, { t:"←", act:"back", fn:true, aria:"한 글자 지우기" },
+    { t:"4" }, { t:"5" }, { t:"6" }, { t:"C", act:"clear", fn:true, aria:"입력 칸 비우기" },
+    { t:"1" }, { t:"2" }, { t:"3" }, { t:"이동", act:"next", fn:true, aria:"다음 입력 칸으로 이동" },
+    { t:"00" }, { t:"0" }, { t:"k", act:"kilo", fn:true, aria:"1,000 곱하기" }, { t:".", dot:true }
+  ];
+
+  /* 환율 탭용 — 입력칸이 하나라 "이동" 자리에 통화 전환(⇆)을 둔다 */
+  var KEYS_SINGLE = [
+    { t:"7" }, { t:"8" }, { t:"9" }, { t:"←", act:"back", fn:true, aria:"한 글자 지우기" },
+    { t:"4" }, { t:"5" }, { t:"6" }, { t:"C", act:"clear", fn:true, aria:"입력 칸 비우기" },
+    { t:"1" }, { t:"2" }, { t:"3" }, { t:"⇆", act:"next", fn:true, aria:"통화 서로 바꾸기" },
+    { t:"00" }, { t:"0" }, { t:"k", act:"kilo", fn:true, aria:"1,000 곱하기" }, { t:".", dot:true }
+  ];
+
+  /* k — 입력칸의 현재 값에 1,000을 곱한다 (25 → 25,000 / 1.5 → 1,500) */
+  function kiloField(el){
+    var amount = el.dataset.kind === "amount";
+    var raw = amount ? digitsOnly(el.value) : decimalOnly(el.value);
+    if (raw === "" || raw === ".") return;
+    var n = parseFloat(raw);
+    if (!isFinite(n)) return;
+    var scaled = n * 1000;
+    el.value = amount ? group(String(Math.round(scaled))) : groupDecimal(trimNum(scaled));
+    try { el.setSelectionRange(el.value.length, el.value.length); } catch(e){}
+  }
+
+  function makeKeypad(host, getTarget, onChange, onNext, keys){
+    var dotKey = null, kiloKey = null;
+
+    (keys || KEYS).forEach(function(def){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "key" + (def.fn ? " fn" : "") + (def.wide ? " wide" : "") + (def.wide3 ? " wide3" : "");
+      b.textContent = def.t;
+      if (def.aria) b.setAttribute("aria-label", def.aria);
+      if (def.dot) dotKey = b;
+      if (def.act === "kilo") kiloKey = b;
+
+      /* keep focus (and the caret) in the field the pad is typing into */
+      b.addEventListener("mousedown", function(ev){ ev.preventDefault(); });
+
+      b.addEventListener("click", function(){
+        if (def.act === "next"){ onNext(); return; }
+        var el = getTarget();
+        if (!el) return;
+        /* read-only fields raise no system keyboard, so focusing one just shows the caret */
+        if (el.readOnly && document.activeElement !== el){
+          try { el.focus({ preventScroll: true }); } catch(e){ el.focus(); }
+        }
+        if (def.act === "clear"){
+          el.value = "";
+        } else if (def.act === "back"){
+          backspace(el);
+        } else if (def.act === "kilo"){
+          kiloField(el);
+        } else {
+          insert(el, def.t);
+        }
+        fireInput(el);
+        onChange();
+      });
+
+      host.appendChild(b);
+    });
+
+    return {
+      sync: function(){
+        var el = getTarget();
+        if (dotKey) dotKey.disabled = !el || el.dataset.kind === "amount";
+        /* 할인율 칸에서 ×1,000 은 의미가 없다 */
+        if (kiloKey) kiloKey.disabled = !el || el.dataset.kind === "rate";
+      }
+    };
+  }
+
+  /* An unfocused field reports a stale selection (often 0), which would insert at the
+     front of an existing number — treat it as "caret at the end" instead. */
+  function caretRange(el){
+    var end = el.value.length;
+    if (document.activeElement !== el) return [end, end];
+    var s = el.selectionStart, e = el.selectionEnd;
+    if (s == null || e == null) return [end, end];
+    return [s, e];
+  }
+
+  function insert(el, text){
+    var v = el.value;
+    var r = caretRange(el), start = r[0], end = r[1];
+    el.value = v.slice(0, start) + text + v.slice(end);
+    var pos = start + text.length;
+    try { el.setSelectionRange(pos, pos); } catch(e){}
+  }
+
+  function backspace(el){
+    var v = el.value;
+    var r = caretRange(el), start = r[0], end = r[1];
+    if (start !== end){
+      el.value = v.slice(0, start) + v.slice(end);
+      try { el.setSelectionRange(start, start); } catch(e){}
+      return;
+    }
+    if (start === 0) return;
+    var cut = start;
+    if (v.charAt(cut - 1) === ",") cut--;   // step over a separator so a digit is removed
+    if (cut === 0) return;
+    el.value = v.slice(0, cut - 1) + v.slice(start);
+    try { el.setSelectionRange(cut - 1, cut - 1); } catch(e){}
+  }
+
+  /* ---------- per-field clear buttons ---------- */
+  function bindClearButtons(root, onChange){
+    var btns = root.querySelectorAll(".clearbtn");
+    Array.prototype.forEach.call(btns, function(b){
+      var el = $(b.dataset.clear);
+      if (!el) return;
+      b.addEventListener("mousedown", function(ev){ ev.preventDefault(); });
+      b.addEventListener("click", function(){
+        el.value = "";
+        fireInput(el);
+        onChange();
+      });
+    });
+  }
+  function syncClearButtons(root){
+    var btns = root.querySelectorAll(".clearbtn");
+    Array.prototype.forEach.call(btns, function(b){
+      var el = $(b.dataset.clear);
+      b.hidden = !el || el.value === "";
+    });
+  }
+
+  function flowNode(host, items){
+    host.innerHTML = "";
+    items.forEach(function(it){
+      if (it.type === "amt"){
+        var a = document.createElement("div");
+        a.className = "amt" + (it.dim ? " dim" : "");
+        a.textContent = it.text;
+        host.appendChild(a);
+      } else {
+        var s = document.createElement("div");
+        s.className = "step";
+        s.innerHTML = '<span class="arrow">&#8595;</span><span class="tagline">' + it.text + '</span><span class="arrow">&#8595;</span>';
+        host.appendChild(s);
+      }
+    });
+  }
+
+  /* flash 는 makeFlash 가 만든 함수 — 버튼 라벨을 잠깐 바꿨다가 되돌린다 */
+  function copyText(text, box, flash){
+    var done = function(){ flash("복사됨 ✓"); };
+    var fallback = function(){
+      box.hidden = false;
+      box.value = text;
+      try { box.select(); box.setSelectionRange(0, text.length); } catch(e){}
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch(e){}
+      if (ok){ box.hidden = true; done(); }
+      else { flash("아래에서 직접 복사"); }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  /* Temporary label on a button. The pending timer is cleared each time, so a quick
+     second message is not wiped by the first one's timeout. */
+  function makeFlash(btn){
+    var base = btn.textContent, timer = null;
+    return function(msg){
+      if (timer) clearTimeout(timer);
+      btn.textContent = msg;
+      timer = setTimeout(function(){ btn.textContent = base; timer = null; }, 1600);
+    };
+  }
+
+  /* ---------- paste into the field the keypad is aimed at ----------
+     Mobile fields are read-only (so no system keyboard appears), which also blocks the
+     normal paste gesture — this button reads the clipboard instead. */
+  function bindPaste(btn, getTarget, onChange){
+    var flash = makeFlash(btn);
+    btn.addEventListener("mousedown", function(ev){ ev.preventDefault(); });
+    btn.addEventListener("click", function(){
+      var el = getTarget();
+      if (!el) return;
+      if (!navigator.clipboard || !navigator.clipboard.readText){
+        flash("지원 안 됨");
+        return;
+      }
+      navigator.clipboard.readText().then(function(text){
+        var picked = pickNumber(text);
+        var clean = el.dataset.kind === "amount" ? digitsOnly(picked) : decimalOnly(picked);
+        clean = clean.replace(/^\.+/, "");
+        if (!clean){ flash("숫자 없음"); return; }
+        el.value = clean;
+        fireInput(el);
+        onChange();
+        flash("붙여넣음 ✓");
+      }, function(){
+        flash("권한 거부");
+      });
+    });
+  }
+
+  /* ---------- 배경 모드 (밝게 / 어둡게) ---------- */
+  var THEME_ORDER = ["light", "dark"];
+  var THEME_LABEL = { light: "배경 모드: 밝게", dark: "배경 모드: 어둡게" };
+  var THEME_ICON = {
+    light:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">' +
+          '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M4.3 4.3l1.6 1.6M18.1 18.1l1.6 1.6' +
+          'M2.6 12h2.2M19.2 12h2.2M4.3 19.7l1.6-1.6M18.1 5.9l1.6-1.6"/></svg>',
+    dark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M20 14.5A8.2 8.2 0 0 1 9.5 4 8.3 8.3 0 1 0 20 14.5z"/></svg>'
+  };
+
+  function setupTheme(btn){
+    /* 저장된 선택이 없으면 기기의 다크 모드 설정을 첫 값으로 쓰고,
+       그 다음부터는 사용자가 고른 값만 따른다. */
+    var mode = null;
+    try {
+      var saved = localStorage.getItem("discount-calc-theme");
+      if (THEME_ORDER.indexOf(saved) !== -1) mode = saved;
+    } catch(e){}
+    if (!mode){
+      var prefersDark = false;
+      try {
+        prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      } catch(e){}
+      mode = prefersDark ? "dark" : "light";
+    }
+
+    function apply(){
+      document.documentElement.setAttribute("data-theme", mode);
+      btn.innerHTML = THEME_ICON[mode];
+      btn.title = THEME_LABEL[mode];
+      btn.setAttribute("aria-label", THEME_LABEL[mode] + " (눌러서 전환)");
+      try { localStorage.setItem("discount-calc-theme", mode); } catch(e){}
+    }
+
+    btn.addEventListener("click", function(){
+      mode = THEME_ORDER[(THEME_ORDER.indexOf(mode) + 1) % THEME_ORDER.length];
+      apply();
+    });
+    apply();
+  }
+
+  /* ---------- active-field tracking ---------- */
+  function trackActive(inputs, onSwitch){
+    var active = inputs[0];
+    inputs.forEach(function(el){
+      el.addEventListener("focus", function(){ active = el; onSwitch(); });
+    });
+    return {
+      get: function(){
+        if (active && active.offsetParent === null && active !== inputs[0]) active = inputs[0];
+        return active;
+      },
+      set: function(el){ active = el; onSwitch(); }
+    };
+  }
+  /* "이동" key — steps the pad's target to the next visible field, wrapping around.
+     Focus follows only when a field already had it, so the pad doesn't summon the
+     on-screen keyboard on mobile. */
+  function stepTarget(ctl, inputs){
+    var visible = [];
+    inputs.forEach(function(el){ if (el.offsetParent !== null) visible.push(el); });
+    if (!visible.length) return;
+    var i = visible.indexOf(ctl.get());
+    var next = visible[(i + 1) % visible.length];
+    var hadFocus = visible.indexOf(document.activeElement) !== -1;
+    ctl.set(next);
+    if (hadFocus){
+      next.focus();
+      try { next.setSelectionRange(next.value.length, next.value.length); } catch(e){}
+    }
+  }
+
+  function markActive(inputs, activeEl){
+    inputs.forEach(function(el){
+      var wrap = el.parentNode;
+      if (!wrap || !wrap.classList) return;
+      if (el === activeEl) wrap.classList.add("is-active");
+      else wrap.classList.remove("is-active");
+    });
+  }
+
+  /* ================= 할인 계산 ================= */
+  var panelD = $("panel-discount");
+  var dAmount = $("d-amount"), dRate = $("d-rate"), dRate2 = $("d-rate2"),
+      dChain = $("d-chain"), dChainField = $("d-chain-field"),
+      dHint = $("d-hint"), dNote = $("d-note"), dFlow = $("d-flow"),
+      dCopyBox = $("d-copybox"), dCopyBtn = $("d-copy"),
+      dSendBtns = [$("d-tocalc"), $("d-tofx"), $("d-torev")],
+      dPadTarget = $("d-pad-target");
+  var dState = { text: "", value: NaN };
+  var dInputs = [dAmount, dRate, dRate2];
+  var dActive, dPad;
+
+  function clearDiscount(msg, isError){
+    $("d-final").textContent = "—";
+    $("d-savebar").textContent = "—";
+    $("d-r-amount").textContent = "—";
+    $("d-r-rate").textContent = "—";
+    $("d-r-disc").textContent = "—";
+    $("d-r-eff").textContent = "—";
+    dFlow.innerHTML = "";
+    dNote.hidden = true;
+    dHint.textContent = msg || "";
+    dHint.className = "hint" + (isError ? " error" : "");
+    dState.text = "";
+    dState.value = NaN;
+    dCopyBtn.disabled = true;
+    dSendBtns.forEach(function(b){ b.disabled = true; });
+    dCopyBox.hidden = true;
+    syncClearButtons(panelD);
+  }
+
+  function calcDiscount(){
+    var amountStr = digitsOnly(dAmount.value);
+    var rateStr = dRate.value.trim();
+    var rate = parseFloat(rateStr);
+    var messages = [];
+
+    dChainField.hidden = !dChain.checked;
+    syncQuick($("d-quick"), isFinite(rate) ? rate : NaN);
+    syncClearButtons(panelD);
+
+    if (amountStr === ""){ clearDiscount("", false); return; }
+    var amount = parseInt(amountStr, 10);
+    if (!isFinite(amount)){ clearDiscount("금액을 숫자로 입력하세요.", true); return; }
+
+    if (rateStr === "" || !isFinite(rate)) rate = 0;
+    if (rate < 0){ rate = 0; messages.push("할인율은 0% 미만이 될 수 없습니다."); }
+    if (rate > 100){ rate = 100; messages.push("할인율은 100%까지만 적용됩니다."); }
+
+    var rate2 = 0;
+    if (dChain.checked){
+      var r2s = dRate2.value.trim();
+      rate2 = parseFloat(r2s);
+      if (r2s === "" || !isFinite(rate2)) rate2 = 0;
+      if (rate2 < 0){ rate2 = 0; messages.push("추가 할인율은 0% 미만이 될 수 없습니다."); }
+      if (rate2 > 100){ rate2 = 100; messages.push("추가 할인율은 100%까지만 적용됩니다."); }
+    }
+
+    var disc1 = Math.round(amount * rate / 100);
+    var mid = amount - disc1;
+    var disc2 = Math.round(mid * rate2 / 100);
+    var final = mid - disc2;
+    var totalDisc = amount - final;
+    var eff = amount > 0 ? (totalDisc / amount) * 100 : 0;
+
+    $("d-final").innerHTML = wonBig(final);
+    $("d-savebar").textContent = "-" + won(totalDisc);
+    $("d-r-amount").textContent = won(amount);
+    $("d-r-rate").textContent = dChain.checked && rate2 > 0 ? (pct(rate) + " + " + pct(rate2)) : pct(rate);
+    $("d-r-disc").textContent = "-" + won(totalDisc);
+    $("d-r-eff").textContent = pct(eff);
+
+    if (dChain.checked && rate2 > 0){
+      flowNode(dFlow, [
+        { type:"amt", text: won(amount) },
+        { type:"step", text: pct(rate) + " 할인" },
+        { type:"amt", text: won(mid), dim:true },
+        { type:"step", text: "추가 " + pct(rate2) + " 할인" },
+        { type:"amt", text: won(final) }
+      ]);
+      var sumRate = Math.min(100, rate + rate2);
+      var sumFinal = amount - Math.round(amount * sumRate / 100);
+      var gap = final - sumFinal;
+      dNote.hidden = false;
+      dNote.innerHTML = "연속 할인은 " + pct(sumRate) + " 단일 할인과 다릅니다. " +
+        pct(sumRate) + " 단일 할인 시 <b>" + won(sumFinal) + "</b>, 연속 할인 시 <b>" + won(final) + "</b> — " +
+        (gap === 0 ? "결과가 같습니다." : "연속 할인이 <b>" + won(Math.abs(gap)) + "</b> " + (gap > 0 ? "더 비쌉니다." : "더 쌉니다.")) +
+        " 실질 할인율은 " + pct(eff) + "입니다.";
+    } else {
+      flowNode(dFlow, [
+        { type:"amt", text: won(amount) },
+        { type:"step", text: pct(rate) + " 할인" },
+        { type:"amt", text: won(final) }
+      ]);
+      dNote.hidden = true;
+    }
+
+    dHint.textContent = messages.join(" ");
+    dHint.className = "hint" + (messages.length ? " error" : "");
+
+    dState.text =
+      "원금: " + won(amount) + "\n" +
+      "할인율: " + (dChain.checked && rate2 > 0 ? pct(rate) + " + " + pct(rate2) + " (연속)" : pct(rate)) + "\n" +
+      "할인금액: " + won(totalDisc) + "\n" +
+      "최종금액: " + won(final);
+    dState.value = final;
+    dCopyBtn.disabled = false;
+    dSendBtns.forEach(function(b){ b.disabled = false; });
+  }
+
+  function onDiscountSwitch(){
+    var el = dActive.get();
+    markActive(dInputs, el);
+    dPadTarget.textContent = el ? (el.dataset.name || "") : "";
+    if (dPad) dPad.sync();
+  }
+
+  bindAmount(dAmount, calcDiscount);
+  bindRate(dRate, calcDiscount);
+  bindRate(dRate2, calcDiscount);
+  dChain.addEventListener("change", function(){
+    calcDiscount();
+    if (dChain.checked) dActive.set(dRate2);
+    else if (dActive.get() === dRate2) dActive.set(dAmount);
   });
-  document.addEventListener("dblclick", function(e){ e.preventDefault(); }, {passive: false});
+  buildQuick($("d-quick"), dRate, calcDiscount);
+  bindClearButtons(panelD, calcDiscount);
+  dActive = trackActive(dInputs, onDiscountSwitch);
+  dPad = makeKeypad($("d-keypad"), function(){ return dActive.get(); }, calcDiscount,
+                    function(){ stepTarget(dActive, dInputs); });
+  bindPaste($("d-paste"), function(){ return dActive.get(); }, calcDiscount);
 
-  var lastTouchEnd = 0;
-  document.addEventListener("touchend", function(e){
-    // 버튼·입력칸의 빠른 연속 탭은 그대로 살립니다
-    if (e.target.closest("button, input")) { lastTouchEnd = 0; return; }
-    var now = Date.now();
-    if (now - lastTouchEnd <= 300) e.preventDefault();
-    lastTouchEnd = now;
-  }, {passive: false});
+  $("d-reset").addEventListener("click", function(){
+    dAmount.value = ""; dRate.value = ""; dRate2.value = ""; dChain.checked = false;
+    dCopyBox.hidden = true;
+    dActive.set(dAmount);
+    calcDiscount();
+  });
+  var dCopyFlash = makeFlash(dCopyBtn);
+  dCopyBtn.addEventListener("click", function(){
+    if (!dState.text) return;
+    copyText(dState.text, dCopyBox, dCopyFlash);
+  });
+  /* 결과를 다른 탭으로 — 실패하면 버튼에 사유를 잠깐 띄운다 */
+  function bindSend(btn, fn, getValue){
+    var flash = makeFlash(btn);
+    btn.addEventListener("click", function(){
+      var r = fn(getValue());
+      if (r !== "ok" && r !== "rounded") flash(r);
+    });
+  }
+  function dValue(){ return dState.value; }
+  bindSend($("d-tocalc"), sendToCalc,    dValue);
+  bindSend($("d-tofx"),   sendToFx,      dValue);
+  bindSend($("d-torev"),  sendToReverse, dValue);
 
-  /* ---------- theme ---------- */
+  /* ================= 원금 역산 ================= */
+  var panelR = $("panel-reverse");
+  var rFinal = $("r-final"), rRate = $("r-rate"), rHint = $("r-hint"), rFlow = $("r-flow"),
+      rCopyBox = $("r-copybox"), rCopyBtn = $("r-copy"),
+      rSendBtns = [$("r-todisc"), $("r-tocalc"), $("r-tofx")],
+      rPadTarget = $("r-pad-target");
+  var rState = { text: "", value: NaN };
+  var rInputs = [rFinal, rRate];
+  var rActive, rPad;
+
+  function clearReverse(msg, isError){
+    $("r-origin").textContent = "—";
+    $("r-savebar").textContent = "—";
+    $("r-r-final").textContent = "—";
+    $("r-r-rate").textContent = "—";
+    $("r-r-disc").textContent = "—";
+    rFlow.innerHTML = "";
+    rHint.textContent = msg || "";
+    rHint.className = "hint" + (isError ? " error" : "");
+    rState.text = "";
+    rState.value = NaN;
+    rCopyBtn.disabled = true;
+    rSendBtns.forEach(function(b){ b.disabled = true; });
+    rCopyBox.hidden = true;
+    syncClearButtons(panelR);
+  }
+
+  function calcReverse(){
+    var finalStr = digitsOnly(rFinal.value);
+    var rateStr = rRate.value.trim();
+    var rate = parseFloat(rateStr);
+    var messages = [];
+
+    syncQuick($("r-quick"), isFinite(rate) ? rate : NaN);
+    syncClearButtons(panelR);
+
+    if (finalStr === ""){ clearReverse("", false); return; }
+    var finalAmt = parseInt(finalStr, 10);
+    if (!isFinite(finalAmt)){ clearReverse("금액을 숫자로 입력하세요.", true); return; }
+
+    if (rateStr === "" || !isFinite(rate)) rate = 0;
+    if (rate < 0){ rate = 0; messages.push("할인율은 0% 미만이 될 수 없습니다."); }
+    if (rate >= 100){
+      clearReverse("할인율이 100%이면 원금을 계산할 수 없습니다. 100% 미만으로 입력하세요.", true);
+      return;
+    }
+
+    var origin = Math.round(finalAmt / (1 - rate / 100));
+    var disc = origin - finalAmt;
+
+    $("r-origin").innerHTML = wonBig(origin);
+    $("r-savebar").textContent = "-" + won(disc);
+    $("r-r-final").textContent = won(finalAmt);
+    $("r-r-rate").textContent = pct(rate);
+    $("r-r-disc").textContent = "-" + won(disc);
+
+    flowNode(rFlow, [
+      { type:"amt", text: won(origin) },
+      { type:"step", text: pct(rate) + " 할인" },
+      { type:"amt", text: won(finalAmt), dim:true }
+    ]);
+
+    rHint.textContent = messages.join(" ");
+    rHint.className = "hint" + (messages.length ? " error" : "");
+
+    rState.text =
+      "최종금액: " + won(finalAmt) + "\n" +
+      "할인율: " + pct(rate) + "\n" +
+      "할인금액: " + won(disc) + "\n" +
+      "원금: " + won(origin);
+    rState.value = origin;
+    rCopyBtn.disabled = false;
+    rSendBtns.forEach(function(b){ b.disabled = false; });
+  }
+
+  function onReverseSwitch(){
+    var el = rActive.get();
+    markActive(rInputs, el);
+    rPadTarget.textContent = el ? (el.dataset.name || "") : "";
+    if (rPad) rPad.sync();
+  }
+
+  bindAmount(rFinal, calcReverse);
+  bindRate(rRate, calcReverse);
+  buildQuick($("r-quick"), rRate, calcReverse);
+  bindClearButtons(panelR, calcReverse);
+  rActive = trackActive(rInputs, onReverseSwitch);
+  rPad = makeKeypad($("r-keypad"), function(){ return rActive.get(); }, calcReverse,
+                    function(){ stepTarget(rActive, rInputs); });
+  bindPaste($("r-paste"), function(){ return rActive.get(); }, calcReverse);
+
+  $("r-reset").addEventListener("click", function(){
+    rFinal.value = ""; rRate.value = "";
+    rCopyBox.hidden = true;
+    rActive.set(rFinal);
+    calcReverse();
+  });
+  var rCopyFlash = makeFlash(rCopyBtn);
+  rCopyBtn.addEventListener("click", function(){
+    if (!rState.text) return;
+    copyText(rState.text, rCopyBox, rCopyFlash);
+  });
+  function rValue(){ return rState.value; }
+  bindSend($("r-todisc"), sendToAmount, rValue);
+  bindSend($("r-tocalc"), sendToCalc,   rValue);
+  bindSend($("r-tofx"),   sendToFx,     rValue);
+
+  /* ================= 일반 계산 ================= */
+  var panelC = $("panel-calc");
+  var cExprEl = $("c-expr"), cEntryEl = $("c-entry"),
+      cCopyBox = $("c-copybox"), cCopyBtn = $("c-copy");
+
+  var cAcc = null;     // 누적값
+  var cOp = null;      // 대기 중인 연산자
+  var cEntry = "0";    // 현재 입력
+  var cFresh = true;   // 표시값이 아직 피연산자가 아님 (연산자 직후)
+  var cReplace = false;// 표시값은 피연산자지만 다음 숫자가 덮어씀 (단항 연산 직후)
+  var cDone = false;   // 직전에 = 를 눌렀는가
+  var cError = false;
+  var cTrail = [];     // 지금까지 누른 식 ["100", "+", "200", "+"]
+  var cTermLabel = null; // 단항 연산이 만든 항 표시 (예: sqr(7))
+
+  var OPSYM = { "+":"+", "-":"−", "*":"×", "/":"÷" };
+
+  /* 유효숫자 12자리로 잘라 2진 부동소수점 잔차를 없앤다.
+     (Math.round(n*1e10)/1e10 은 n 이 크면 안전 정수 범위를 넘어 무력해진다) */
+  function trimNum(n){
+    if (!isFinite(n) || n === 0) return "0";
+    return String(Number(n.toPrecision(12)));
+  }
+
+  function commaInt(s){
+    if (s.indexOf("e") !== -1 || s.indexOf("E") !== -1) return s;
+    var neg = s.charAt(0) === "-";
+    var t = neg ? s.slice(1) : s;
+    var parts = t.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return (neg ? "-" : "") + parts.join(".");
+  }
+  function fmtNum(n){
+    if (!isFinite(n)) return "—";
+    var s = trimNum(n);
+    if (s.indexOf("e") !== -1) return Number(s).toExponential(6);
+    return commaInt(s);
+  }
+
+  /* 식이 길어지면 앞을 줄임표로 접는다 — 디스플레이가 세로로 늘어나지 않게 */
+  function cTrailText(extra){
+    var parts = cTrail.slice();
+    if (extra) parts.push(extra);
+    if (!parts.length) return "";
+    var shown = parts.length > 9 ? ["\u2026"].concat(parts.slice(-9)) : parts;
+    return shown.join(" ");
+  }
+
+  function cRender(){
+    cError = false;
+    cEntryEl.textContent = commaInt(cEntry);
+    var line = cTrailText();
+    cExprEl.innerHTML = line ? "" : "&nbsp;";
+    if (line) cExprEl.textContent = line;
+    cCopyBtn.disabled = false;
+  }
+  function cFail(msg){
+    cAcc = null; cOp = null; cEntry = "0"; cFresh = true; cReplace = false; cDone = false; cError = true;
+    cTrail = []; cTermLabel = null;
+    cEntryEl.textContent = "—";
+    cExprEl.textContent = msg;
+    cCopyBtn.disabled = true;
+  }
+
+  function cCompute(a, op, b){
+    if (op === "+") return a + b;
+    if (op === "-") return a - b;
+    if (op === "*") return a * b;
+    if (op === "/") return b === 0 ? NaN : a / b;
+    return b;
+  }
+
+  function cDigit(d){
+    if (cError) { cEntry = "0"; cFresh = true; }
+    if (cDone){ cAcc = null; cOp = null; cDone = false; cFresh = true; cTrail = []; }
+    cTermLabel = null;
+    if (cFresh || cReplace){
+      cEntry = (d === "00") ? "0" : d;
+      cFresh = false; cReplace = false;
+    } else if (cEntry === "0"){
+      if (d !== "00") cEntry = d;
+    } else if (cEntry === "-0"){
+      if (d !== "00") cEntry = "-" + d;
+    } else {
+      cEntry += d;
+    }
+    if (cEntry.replace(/[^0-9]/g, "").length > 14) cEntry = cEntry.slice(0, -1);
+    cRender();
+  }
+
+  function cDot(){
+    if (cError){ cEntry = "0"; cFresh = false; }
+    if (cDone){ cAcc = null; cOp = null; cDone = false; cEntry = "0"; cFresh = false; cTrail = []; }
+    cTermLabel = null;
+    if (cFresh || cReplace){ cEntry = "0"; cFresh = false; cReplace = false; }
+    if (cEntry.indexOf(".") === -1) cEntry += ".";
+    cRender();
+  }
+
+  function cBack(){
+    if (cError){ cClear(); return; }
+    if (cDone || cFresh) return;
+    cEntry = cEntry.slice(0, -1);
+    if (cEntry === "" || cEntry === "-") cEntry = "0";
+    cReplace = false; cTermLabel = null;
+    cRender();
+  }
+
+  /* CE — 현재 입력만 지움 (대기 중인 연산은 유지) */
+  function cClearEntry(){
+    if (cError){ cClear(); return; }
+    cEntry = "0"; cFresh = false; cReplace = false; cDone = false; cTermLabel = null;
+    cRender();
+  }
+
+  function cSetOp(op){
+    if (cError) return;
+    var v = parseFloat(cEntry);
+    var term = cTermLabel || fmtNum(v);
+
+    if (cFresh && !cDone && cTrail.length){
+      cTrail[cTrail.length - 1] = OPSYM[op];   // 연산자 연속 입력 → 마지막 것만 교체
+    } else {
+      if (cDone) cTrail = [term];              // = 직후면 결과에서 새 식 시작
+      else cTrail.push(term);
+      cTrail.push(OPSYM[op]);
+    }
+
+    if (cAcc === null || cDone) cAcc = v;
+    else if (!cFresh) cAcc = cCompute(cAcc, cOp, v);
+    if (!isFinite(cAcc)){ cFail("0으로 나눌 수 없습니다"); return; }
+    cOp = op; cFresh = true; cReplace = false; cDone = false; cTermLabel = null;
+    cEntry = trimNum(cAcc);
+    cRender();
+  }
+
+  function cEquals(){
+    if (cError) return;
+    if (cOp === null){ cDone = true; cRender(); return; }
+    var v = parseFloat(cEntry);
+    var term = cTermLabel || fmtNum(v);
+    cTrail.push(term);
+    var line = cTrail.join(" ") + " =";
+    var res = cCompute(cAcc, cOp, v);
+    cAcc = null; cOp = null; cFresh = true; cReplace = false; cDone = true;
+    cTrail = []; cTermLabel = null;
+    if (!isFinite(res)){ cFail("0으로 나눌 수 없습니다"); return; }
+    cEntry = trimNum(res);
+    cEntryEl.textContent = commaInt(cEntry);
+    cExprEl.textContent = line;
+    cCopyBtn.disabled = false;
+    histAdd(line, cEntry);
+  }
+
+  function cPercent(){
+    if (cError) return;
+    /* % 는 100으로 나누기다. 식에 "50%" 로 적으면 "앞 항의 50%"(윈도우 방식)로
+       오해할 수 있어, 변환된 숫자를 그대로 항으로 쓴다. */
+    cEntry = trimNum(parseFloat(cEntry) / 100);
+    cFresh = false; cReplace = true; cDone = false; cTermLabel = null;
+    cRender();
+  }
+
+  /* k — 현재 표시값에 1,000을 곱한다. 연산자를 막 누른 직후(피연산자 미입력)에는 동작하지 않는다. */
+  function cKilo(){
+    if (cError) return;
+    if (cFresh && !cDone) return;          // 연산자 직후 — 곱할 값이 아직 없다
+    var v = parseFloat(cEntry);
+    if (!isFinite(v)) return;
+    if (cDone){ cAcc = null; cOp = null; cDone = false; cTrail = []; }
+    cEntry = trimNum(v * 1000);
+    /* k 는 자릿수 단축키이므로 뒤이어 누른 숫자는 덮어쓰지 않고 이어 붙인다 */
+    cFresh = false; cReplace = false; cTermLabel = null;
+    cRender();
+  }
+
+  function cSign(){
+    if (cError) return;
+    if (cEntry === "0") return;
+    cEntry = cEntry.charAt(0) === "-" ? cEntry.slice(1) : "-" + cEntry;
+    cFresh = false; cTermLabel = null;
+    cRender();
+  }
+
+  function cClear(){
+    cAcc = null; cOp = null; cEntry = "0"; cFresh = true; cReplace = false; cDone = false;
+    cTrail = []; cTermLabel = null;
+    cCopyBox.hidden = true;
+    cRender();
+  }
+
+  var CALC_KEYS = [
+    { t:".", aria:"소수점" },
+    { t:"C", act:"clear", fn:true, aria:"전체 지우기" },
+    { t:"←", act:"back", fn:true, aria:"한 글자 지우기" },
+    { t:"÷", act:"op", op:"/", opk:true, aria:"나누기" },
+    { t:"7" }, { t:"8" }, { t:"9" }, { t:"×", act:"op", op:"*", opk:true, aria:"곱하기" },
+    { t:"4" }, { t:"5" }, { t:"6" }, { t:"−", act:"op", op:"-", opk:true, aria:"빼기" },
+    { t:"1" }, { t:"2" }, { t:"3" }, { t:"+", act:"op", op:"+", opk:true, aria:"더하기" },
+    { t:"00" }, { t:"0" }, { t:"k", act:"kilo", fn:true, aria:"1,000 곱하기" }, { t:"=", act:"eq", eqk:true, aria:"계산" }
+  ];
+
+  (function buildCalcPad(){
+    var host = $("c-keypad");
+    CALC_KEYS.forEach(function(def){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "key" + (def.fn ? " fn" : "") + (def.opk ? " op" : "") + (def.eqk ? " eq" : "");
+      b.textContent = def.t;
+      if (def.aria) b.setAttribute("aria-label", def.aria);
+      b.addEventListener("mousedown", function(ev){ ev.preventDefault(); });
+      b.addEventListener("click", function(){
+        if (def.act === "clear") cClear();
+        else if (def.act === "ce") cClearEntry();
+        else if (def.act === "back") cBack();
+        else if (def.act === "kilo") cKilo();
+        else if (def.act === "op") cSetOp(def.op);
+        else if (def.act === "eq") cEquals();
+        else if (def.t === ".") cDot();
+        else cDigit(def.t);
+      });
+      host.appendChild(b);
+    });
+  })();
+
+  $("c-sign").addEventListener("mousedown", function(ev){ ev.preventDefault(); });
+  $("c-sign").addEventListener("click", cSign);
+  $("c-pct").addEventListener("mousedown", function(ev){ ev.preventDefault(); });
+  $("c-pct").addEventListener("click", cPercent);
+
+  /* ---------- 최근 계산 목록 (일반 계산 / 환율 공용) ---------- */
+  var HIST_MAX = 10;
+
+  /* actions: [{ label, run(item, flash) }] — 줄마다 항상 보이는 버튼
+     menu:    [{ label, run(item, flash) }] — "보내기"를 눌렀을 때만 펼쳐지는 선택지 */
+  function makeHistory(listEl, clearBtn, editBtn, storageKey, emptyText, actions, menu, onPick){
+    var items = [], editing = false, openIdx = -1;
+    try {
+      var raw = localStorage.getItem(storageKey);
+      if (raw){
+        var parsed = JSON.parse(raw);
+        if (Object.prototype.toString.call(parsed) === "[object Array]"){
+          parsed.forEach(function(it){
+            if (it && typeof it.expr === "string" && typeof it.val === "string") items.push(it);
+          });
+        }
+      }
+    } catch(e){ items = []; }
+    /* 보관 개수를 줄였을 때 이전에 쌓인 기록도 불러올 때 잘라낸다 */
+    if (items.length > HIST_MAX) items.length = HIST_MAX;
+
+    function save(){
+      try { localStorage.setItem(storageKey, JSON.stringify(items.slice(0, HIST_MAX))); } catch(e){}
+    }
+
+    function render(){
+      listEl.innerHTML = "";
+      if (!items.length){ editing = false; openIdx = -1; }
+      if (editing) openIdx = -1;
+      clearBtn.hidden = items.length === 0;
+      editBtn.hidden = items.length === 0;
+      editBtn.textContent = editing ? "완료" : "편집";
+      editBtn.setAttribute("aria-pressed", editing ? "true" : "false");
+      if (!items.length){
+        var empty = document.createElement("p");
+        empty.className = "histempty";
+        empty.textContent = emptyText;
+        listEl.appendChild(empty);
+        return;
+      }
+      items.forEach(function(item, idx){
+        var row = document.createElement("div");
+        row.className = "histrow";
+
+        /* 기록 줄을 누르면 그 항목을 현재 계산으로 불러온다 (편집 중에는 비활성) */
+        var pickable = !editing && typeof onPick === "function";
+        var main = document.createElement(pickable ? "button" : "div");
+        main.className = "histmain" + (pickable ? " histpick" : "");
+        if (pickable){
+          main.type = "button";
+          main.setAttribute("aria-label", (item.label || commaInt(item.val)) + " 현재 계산으로 불러오기");
+          main.addEventListener("click", function(){ onPick(item); });
+        }
+        var e = document.createElement("span");
+        e.className = "hexpr";
+        e.textContent = item.expr;
+        var v = document.createElement("span");
+        v.className = "hval";
+        v.textContent = item.label || commaInt(item.val);
+        main.appendChild(e);
+        main.appendChild(v);
+
+        var box = document.createElement("div");
+        box.className = "histactions";
+        if (editing){
+          var del = document.createElement("button");
+          del.type = "button";
+          del.className = "histsend histdel";
+          del.textContent = "삭제";
+          del.setAttribute("aria-label", (item.label || commaInt(item.val)) + " 삭제");
+          del.addEventListener("click", function(){
+            items.splice(idx, 1);
+            save();
+            render();
+          });
+          box.appendChild(del);
+        } else {
+          var name = item.label || commaInt(item.val);
+          actions.forEach(function(act){
+            var send = document.createElement("button");
+            send.type = "button";
+            send.className = "histsend";
+            send.textContent = act.label;
+            send.setAttribute("aria-label", name + " " + act.label);
+            var flash = makeFlash(send);
+            send.addEventListener("click", function(){ act.run(item, flash); });
+            box.appendChild(send);
+          });
+
+          if (menu && menu.length){
+            var open = openIdx === idx;
+            var more = document.createElement("button");
+            more.type = "button";
+            more.className = "histsend" + (open ? " open" : "");
+            more.textContent = open ? "보내기 ▴" : "보내기 ▾";
+            more.setAttribute("aria-expanded", open ? "true" : "false");
+            more.setAttribute("aria-label", name + " 보내기");
+            more.addEventListener("click", function(){
+              openIdx = open ? -1 : idx;
+              render();
+            });
+            box.appendChild(more);
+          }
+        }
+
+        row.appendChild(main);
+        row.appendChild(box);
+
+        if (!editing && menu && menu.length && openIdx === idx){
+          var menuBox = document.createElement("div");
+          menuBox.className = "histmenu";
+          menu.forEach(function(act){
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "histsend";
+            b.textContent = act.label;
+            b.setAttribute("aria-label", (item.label || commaInt(item.val)) + " " + act.label);
+            var flash = makeFlash(b);
+            b.addEventListener("click", function(){
+              var msg = act.run(item, flash);
+              if (msg !== false){ openIdx = -1; render(); }
+            });
+            menuBox.appendChild(b);
+          });
+          row.appendChild(menuBox);
+        }
+
+        listEl.appendChild(row);
+      });
+    }
+
+    clearBtn.addEventListener("click", function(){ items = []; editing = false; openIdx = -1; save(); render(); });
+    editBtn.addEventListener("click", function(){ editing = !editing; openIdx = -1; render(); });
+
+    return {
+      add: function(expr, val, label, extra){
+        if (items.length && items[0].val === val && items[0].expr === expr) return;
+        var it = { expr: expr, val: val };
+        if (label) it.label = label;
+        if (extra){ for (var k in extra){ if (Object.prototype.hasOwnProperty.call(extra, k)) it[k] = extra[k]; } }
+        items.unshift(it);
+        if (items.length > HIST_MAX) items.length = HIST_MAX;
+        editing = false; openIdx = -1;
+        save();
+        render();
+      },
+      render: render
+    };
+  }
+
+  var calcHistory = makeHistory($("c-history"), $("c-hist-clear"), $("c-hist-edit"),
+                                "discount-calc-history", "아직 계산 기록이 없습니다.",
+                                /* 항상 보이는 버튼 — 식과 결과를 함께 복사한다 */
+                                [
+                                  { label: "복사", run: function(item, flash){
+                                      copyText(histText(item), cCopyBox, flash);
+                                    } }
+                                ],
+                                /* "보내기"를 눌렀을 때 펼쳐지는 선택지 */
+                                [
+                                  { label: "할인 →", run: function(item, flash){ return sendFrom(sendToAmount, item, flash); } },
+                                  { label: "환율 →", run: function(item, flash){ return sendFrom(sendToFx, item, flash); } },
+                                  { label: "역산 →", run: function(item, flash){ return sendFrom(sendToReverse, item, flash); } }
+                                ],
+                                cLoad);
+
+  /* 기록 한 줄을 "식 결과" 한 문장으로 — expr 끝에 이미 "=" 가 들어 있다 */
+  function histText(item){
+    var val = item.label || commaInt(item.val);
+    var expr = item.expr || "";
+    if (!expr) return val;
+    return /[=→]\s*$/.test(expr) ? expr + " " + val : expr + " = " + val;
+  }
+
+  /* 실패하면 false 를 돌려 메뉴를 열어 둔 채 사유를 보여 준다 */
+  function sendFrom(fn, item, flash){
+    var r = fn(parseFloat(item.val));
+    if (r !== "ok" && r !== "rounded"){ flash(r); return false; }
+    return true;
+  }
+  function histAdd(expr, val){ calcHistory.add(expr, val); }
+  function histRender(){ calcHistory.render(); }
+
+  /* ---------- 계산 결과를 할인 계산 탭의 원금으로 ---------- */
+  function sendToAmount(v){
+    if (!isFinite(v)) return "결과 없음";
+    if (v < 0) return "음수는 불가";
+    var rounded = Math.round(v);
+    if (rounded === 0) return "0은 불가";
+
+    dAmount.value = String(rounded);
+    fireInput(dAmount);
+    calcDiscount();
+    selectTab("discount");
+    /* 원금은 채워졌으니 다음 차례인 할인율로 커서를 옮긴다.
+       모바일 입력칸은 read-only라 포커스를 줘도 시스템 키보드는 올라오지 않는다. */
+    dActive.set(dRate);
+    try { dRate.focus({ preventScroll: true }); } catch(e){ dRate.focus(); }
+    return v === rounded ? "ok" : "rounded";
+  }
+
+  /* 값을 원금 역산 탭의 "최종 결제금액"으로 올리고 그 탭으로 전환 */
+  function sendToReverse(v){
+    if (!isFinite(v)) return "결과 없음";
+    if (v < 0) return "음수는 불가";
+    var rounded = Math.round(v);
+    if (rounded === 0) return "0은 불가";
+
+    rFinal.value = String(rounded);
+    fireInput(rFinal);
+    calcReverse();
+    selectTab("reverse");
+    rActive.set(rRate);
+    try { rRate.focus({ preventScroll: true }); } catch(e){ rRate.focus(); }
+    return v === rounded ? "ok" : "rounded";
+  }
+
+  /* 값을 환율 탭 금액으로 올리고 그 탭으로 전환 */
+  function sendToFx(v){
+    if (!isFinite(v)) return "결과 없음";
+    if (v < 0) return "음수는 불가";
+    fAmount.value = groupDecimal(trimNum(v));
+    fireInput(fAmount);
+    fxCalc();
+    selectTab("fx");
+    return "ok";
+  }
+
+  /* 기록 항목을 계산기의 현재 값으로 올린다 — "=" 를 막 누른 직후와 같은 상태 */
+  function cLoad(item){
+    var v = parseFloat(item.val);
+    if (!isFinite(v)) return;
+    cAcc = null; cOp = null; cTrail = []; cTermLabel = null;
+    cEntry = trimNum(v);
+    cFresh = true; cReplace = false; cDone = true; cError = false;
+    cEntryEl.textContent = commaInt(cEntry);
+    var line = item.expr || "";
+    cExprEl.innerHTML = line ? "" : "&nbsp;";
+    if (line) cExprEl.textContent = line;
+    cCopyBtn.disabled = false;
+    cCopyBox.hidden = true;
+  }
+
+  /* 값을 일반 계산 탭으로 올리고 그 탭으로 전환 */
+  function sendToCalc(v){
+    if (!isFinite(v)) return "결과 없음";
+    cLoad({ val: String(v), expr: "" });
+    selectTab("calc");
+    return "ok";
+  }
+
+  (function bindCalcPaste(){
+    var btn = $("c-paste");
+    var flash = makeFlash(btn);
+    btn.addEventListener("mousedown", function(ev){ ev.preventDefault(); });
+    btn.addEventListener("click", function(){
+      if (!navigator.clipboard || !navigator.clipboard.readText){ flash("지원 안 됨"); return; }
+      navigator.clipboard.readText().then(function(text){
+        var picked = pickNumber(text);
+        var neg = picked.charAt(0) === "-";
+        var clean = decimalOnly(picked).replace(/^\.+/, "");
+        if (!clean){ flash("숫자 없음"); return; }
+        /* 자릿수 한도는 직접 입력할 때와 같게 */
+        while (clean.replace(/[^0-9]/g, "").length > 14) clean = clean.slice(0, -1);
+        clean = clean.replace(/\.$/, "");
+        cEntry = (neg ? "-" : "") + clean;
+        cFresh = false; cDone = false; cTermLabel = null;
+        cRender();
+        flash("붙여넣음 ✓");
+      }, function(){ flash("권한 거부"); });
+    });
+  })();
+
+  (function bindCalcSendButtons(){
+    [["c-send-d", sendToAmount], ["c-send-f", sendToFx], ["c-send-r", sendToReverse]].forEach(function(pair){
+      var btn = $(pair[0]), send = pair[1], flash = makeFlash(btn);
+      btn.addEventListener("click", function(){
+        if (cError){ flash("결과 없음"); return; }
+        var r = send(parseFloat(cEntry));
+        flash(r === "ok" ? "보냈습니다 ✓" : r === "rounded" ? "반올림해 보냄 ✓" : r);
+      });
+    });
+  })();
+
+  var cCopyFlash = makeFlash(cCopyBtn);
+  cCopyBtn.addEventListener("click", function(){
+    var line = cExprEl.textContent.trim();
+    var text = (line && line !== " " ? line + " " : "") + cEntryEl.textContent;
+    copyText(text, cCopyBox, cCopyFlash);
+  });
+
+  /* PC 키보드 입력 — 일반 계산 탭이 열려 있을 때만 */
+  document.addEventListener("keydown", function(ev){
+    if (panelC.hidden) return;
+    if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    var k = ev.key;
+    if (k >= "0" && k <= "9") cDigit(k);
+    else if (k === ".") cDot();
+    else if (k === "+" || k === "-" || k === "*" || k === "/") cSetOp(k);
+    else if (k === "Enter" || k === "=") cEquals();
+    else if (k === "Backspace") cBack();
+    else if (k === "Escape") cClear();
+    else if (k === "Delete") cClearEntry();   // CE 버튼은 없애고 단축키로만 남겼다
+    else if (k === "%") cPercent();
+    else if (k === "k" || k === "K") cKilo();
+    else return;
+    ev.preventDefault();
+  });
+
+  cClear();
+  histRender();
+
+  /* ================= 환율 ================= */
+  var panelF = $("panel-fx");
+  var fAmount = $("f-amount"), fFrom = $("f-from"), fTo = $("f-to"),
+      fUnit = $("f-unit"), fResult = $("f-result"), fResultLabel = $("f-result-label"),
+      fRate = $("f-rate"), fStamp = $("f-stamp"), fHint = $("f-hint");
+  var fxInputs = [fAmount];
+
+  var CURRENCIES = [
+    ["KRW","대한민국 원"], ["USD","미국 달러"], ["EUR","유로"], ["JPY","일본 엔"],
+    ["CNY","중국 위안"], ["GBP","영국 파운드"], ["AUD","호주 달러"], ["CAD","캐나다 달러"],
+    ["HKD","홍콩 달러"], ["SGD","싱가포르 달러"], ["TWD","대만 달러"], ["THB","태국 바트"],
+    ["VND","베트남 동"], ["CHF","스위스 프랑"], ["INR","인도 루피"], ["MXN","멕시코 페소"],
+    ["PHP","필리핀 페소"], ["IDR","인도네시아 루피아"], ["MYR","말레이시아 링깃"]
+  ];
+  var ZERO_DECIMAL = { KRW:1, JPY:1, VND:1, IDR:1 };
+
+  /* 네트워크가 막혀 있어도 앱이 동작하도록 넣어 둔 기준값.
+     실시간 조회에 성공하면 즉시 교체되며, 화면에 출처가 함께 표시된다. */
+  var FX_SEED = {
+    updated: "2026-10-15T00:02:31Z",
+    rates: {
+      USD:1, KRW:1339.811585, EUR:0.894425, JPY:158.305497, CNY:6.706494, GBP:0.756165,
+      AUD:1.433021, CAD:1.422795, HKD:7.848465, SGD:1.283055, TWD:32.207621, THB:33.627869,
+      VND:25890.201508, CHF:0.833623, INR:95.252751, MXN:18.464303, PHP:62.922028,
+      IDR:17907.815096, MYR:4.082359
+    }
+  };
+
+  var FX_URL = "https://open.er-api.com/v6/latest/USD";
+  var FX_STORE = "discount-calc-fx";
+  var FX_PREFS = "discount-calc-fx-pair";
+  var FX_TTL = 6 * 60 * 60 * 1000;      // 6시간 지나면 자동으로 다시 조회 (API는 하루 1회 갱신)
+
+  var fxRates = FX_SEED.rates, fxUpdated = FX_SEED.updated, fxSource = "seed",
+      fxBusy = false, fxFetchedAt = 0;
+
   try {
-    var savedTheme = localStorage.getItem("tdc-theme");
-    if (savedTheme === "dark" || savedTheme === "light") {
-      document.documentElement.setAttribute("data-theme", savedTheme);
+    var cached = JSON.parse(localStorage.getItem(FX_STORE) || "null");
+    if (cached && cached.rates && cached.rates.USD && cached.updated){
+      fxRates = cached.rates;
+      fxUpdated = cached.updated;
+      fxSource = "cache";
+      fxFetchedAt = cached.fetchedAt || 0;
     }
   } catch(e){}
 
-  $("themeBtn").addEventListener("click", function(){
-    var root = document.documentElement;
-    var isDark = root.getAttribute("data-theme") === "dark" ||
-      (!root.hasAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    root.setAttribute("data-theme", isDark ? "light" : "dark");
-    try { localStorage.setItem("tdc-theme", isDark ? "light" : "dark"); } catch(e){}
-  });
+  /* ---------- 통화 즐겨찾기 ----------
+     두 선택 상자가 목록 하나를 공유한다. 즐겨찾기가 있으면 optgroup 으로 맨 위에 묶고,
+     없으면 예전처럼 평평한 목록으로 그린다. */
+  var FX_FAVS = "discount-calc-fx-favs";
+  var fxFavs = [];
+  try {
+    var savedFavs = JSON.parse(localStorage.getItem(FX_FAVS) || "null");
+    if (Object.prototype.toString.call(savedFavs) === "[object Array]"){
+      savedFavs.forEach(function(code){
+        if (fxRates[code] && fxFavs.indexOf(code) === -1) fxFavs.push(code);
+      });
+    }
+  } catch(e){}
 
-  /* ---------- tabs ---------- */
-  var TABS = {time: ["tabTime", "panelTime"], date: ["tabDate", "panelDate"], diff: ["tabDiff", "panelDiff"]};
-  var currentTab = "time";
+  function currencyName(code){
+    for (var i = 0; i < CURRENCIES.length; i++){
+      if (CURRENCIES[i][0] === code) return CURRENCIES[i][0] + " \u00B7 " + CURRENCIES[i][1];
+    }
+    return code;
+  }
+  function addOption(parent, code){
+    var o = document.createElement("option");
+    o.value = code;
+    o.textContent = currencyName(code);
+    parent.appendChild(o);
+  }
+
+  function buildSelects(){
+    [fFrom, fTo].forEach(function(sel){
+      var keep = sel.value;
+      sel.innerHTML = "";
+      if (fxFavs.length){
+        var gFav = document.createElement("optgroup");
+        gFav.label = "\u2605 즐겨찾기";
+        fxFavs.forEach(function(code){ addOption(gFav, code); });
+        sel.appendChild(gFav);
+
+        var gAll = document.createElement("optgroup");
+        gAll.label = "전체 통화";
+        CURRENCIES.forEach(function(c){
+          if (fxFavs.indexOf(c[0]) === -1) addOption(gAll, c[0]);
+        });
+        sel.appendChild(gAll);
+      } else {
+        CURRENCIES.forEach(function(c){ addOption(sel, c[0]); });
+      }
+      if (keep) sel.value = keep;
+    });
+    syncFavButtons();
+  }
+
+  function syncFavButtons(){
+    [[$("f-from-fav"), fFrom], [$("f-to-fav"), fTo]].forEach(function(pair){
+      var btn = pair[0], sel = pair[1];
+      var on = fxFavs.indexOf(sel.value) !== -1;
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      btn.innerHTML = on ? "\u2605" : "\u2606";
+      btn.setAttribute("aria-label", sel.value + (on ? " 즐겨찾기 해제" : " 즐겨찾기 추가"));
+      btn.title = btn.getAttribute("aria-label");
+    });
+  }
+
+  function toggleFav(sel){
+    var code = sel.value;
+    var i = fxFavs.indexOf(code);
+    if (i === -1) fxFavs.push(code);
+    else fxFavs.splice(i, 1);
+    try { localStorage.setItem(FX_FAVS, JSON.stringify(fxFavs)); } catch(e){}
+    buildSelects();
+  }
+
+  (function fillSelects(){
+    var from = "USD", to = "KRW";
+    try {
+      var pref = JSON.parse(localStorage.getItem(FX_PREFS) || "null");
+      if (pref && fxRates[pref.from] && fxRates[pref.to]){ from = pref.from; to = pref.to; }
+    } catch(e){}
+    fFrom.value = from; fTo.value = to;
+    buildSelects();
+    fFrom.value = from; fTo.value = to;
+    syncFavButtons();
+  })();
+
+  $("f-from-fav").addEventListener("click", function(){ toggleFav(fFrom); });
+  $("f-to-fav").addEventListener("click", function(){ toggleFav(fTo); });
+
+  function fxSavePair(){
+    try { localStorage.setItem(FX_PREFS, JSON.stringify({ from: fFrom.value, to: fTo.value })); } catch(e){}
+  }
+
+  function fmtMoney(n, code){
+    var d = ZERO_DECIMAL[code] ? 0 : 2;
+    return n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function fmtRate(n){
+    var d = n >= 100 ? 2 : n >= 1 ? 4 : 6;
+    return n.toLocaleString("ko-KR", { minimumFractionDigits: 2, maximumFractionDigits: d });
+  }
+  function fxStampText(){
+    var when = "";
+    try {
+      var dt = new Date(fxUpdated);
+      if (!isNaN(dt.getTime())){
+        when = dt.toLocaleString("ko-KR", { year:"numeric", month:"2-digit", day:"2-digit",
+                                            hour:"2-digit", minute:"2-digit" });
+      }
+    } catch(e){}
+    var src = fxSource === "live" ? '<span class="live">실시간</span>'
+            : fxSource === "cache" ? "저장된 값" : "내장 기준값";
+    return "기준 " + (when || fxUpdated) + " · " + src;
+  }
+
+  var fxState = { value: NaN, text: "" };
+
+  function fxCalc(){
+    syncClearButtons(panelF);
+    var from = fFrom.value, to = fTo.value;
+    fUnit.textContent = from;
+    fResultLabel.textContent = "환산 금액 (" + to + ")";
+
+    var rFrom = fxRates[from], rTo = fxRates[to];
+    if (!rFrom || !rTo){
+      fRate.textContent = "지원하지 않는 통화입니다.";
+      fResult.textContent = "—";
+      fStamp.innerHTML = fxStampText();
+      fxState.value = NaN; fxState.text = "";
+      return;
+    }
+
+    var unit = (1 / rFrom) * rTo;              // 1 FROM = unit TO
+    fRate.innerHTML = "1 " + from + " = <b>" + fmtRate(unit) + "</b> " + to;
+    fStamp.innerHTML = fxStampText();
+
+    var raw = decimalOnly(fAmount.value);
+    var amt = parseFloat(raw);
+    if (raw === "" || !isFinite(amt)){
+      fResult.textContent = "—";
+      fHint.textContent = "";
+      fHint.className = "hint";
+      fxState.value = NaN; fxState.text = "";
+      return;
+    }
+
+    var converted = amt * unit;
+    fResult.innerHTML = fmtMoney(converted, to) +
+      '<span class="won">' + to + "</span>";
+    fHint.textContent = "";
+    fHint.className = "hint";
+    fxState.value = converted;
+    fxState.text = fmtMoney(amt, from) + " " + from + " → " + fmtMoney(converted, to) + " " + to +
+                   "\n환율: 1 " + from + " = " + fmtRate(unit) + " " + to;
+  }
+
+  function fxApply(rates, updated, source, fetchedAt){
+    fxRates = rates; fxUpdated = updated; fxSource = source;
+    if (fetchedAt) fxFetchedAt = fetchedAt;
+    fxCalc();
+  }
+
+  function fxFetch(manual){
+    if (fxBusy) return;
+    if (typeof fetch !== "function"){
+      if (manual) fxNotice("이 브라우저에서는 자동 조회를 지원하지 않습니다.");
+      return;
+    }
+    fxBusy = true;
+    var btn = $("f-refresh");
+    var old = btn.textContent;
+    btn.textContent = "불러오는 중…";
+
+    fetch(FX_URL, { cache: "no-store" })
+      .then(function(r){ if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function(data){
+        if (!data || data.result !== "success" || !data.rates || !data.rates.KRW){
+          throw new Error("unexpected payload");
+        }
+        var now = Date.now();
+        fxApply(data.rates, data.time_last_update_utc || new Date(now).toISOString(), "live", now);
+        try {
+          localStorage.setItem(FX_STORE, JSON.stringify({
+            rates: data.rates, updated: fxUpdated, fetchedAt: now
+          }));
+        } catch(e){}
+        fHint.textContent = "";
+        fHint.className = "hint";
+      })
+      .catch(function(){
+        fxNotice(fxSource === "seed"
+          ? "환율을 불러오지 못했습니다. 내장 기준값으로 계산 중입니다."
+          : "환율을 불러오지 못했습니다. 마지막으로 저장된 값으로 계산 중입니다.");
+      })
+      .then(function(){
+        fxBusy = false;
+        btn.textContent = old;
+      });
+  }
+
+  function fxNotice(msg){
+    fHint.textContent = msg;
+    fHint.className = "hint error";
+  }
+
+  bindAmount(fAmount, fxCalc, groupDecimal);
+  bindClearButtons(panelF, fxCalc);
+  bindPaste($("f-paste"), function(){ return fAmount; }, fxCalc);
+  /* 보내는/받는 통화 맞바꾸기 — 셀렉트 사이의 ⇆ 버튼과 키패드의 ⇆ 키가 공유한다 */
+  function fxSwap(){
+    var a = fFrom.value; fFrom.value = fTo.value; fTo.value = a;
+    fxSavePair(); syncFavButtons(); fxCalc();
+  }
+
+  makeKeypad($("f-keypad"), function(){ return fAmount; }, fxCalc, fxSwap, KEYS_SINGLE);
+
+  fFrom.addEventListener("change", function(){ fxSavePair(); syncFavButtons(); fxCalc(); });
+  fTo.addEventListener("change", function(){ fxSavePair(); syncFavButtons(); fxCalc(); });
+  $("f-swap").addEventListener("click", fxSwap);
+  $("f-refresh").addEventListener("click", function(){ fxFetch(true); });
+
+  var fCopyBox = $("f-copybox"), fCopyBtn = $("f-copy");
+
+  var fxHistory = makeHistory($("f-history"), $("f-hist-clear"), $("f-hist-edit"),
+                              "discount-calc-fx-history", "아직 저장한 환율 계산이 없습니다.",
+                              [{ label: "복사", run: function(item, flash){
+                                  copyText(histText(item), fCopyBox, flash);
+                                } }],
+                              [
+                                { label: "할인 →", run: function(item, flash){ return sendFrom(sendToAmount, item, flash); } },
+                                { label: "계산 →", run: function(item, flash){
+                                    /* 화면에 보이는 자릿수 그대로 넘긴다 (KRW/JPY 는 정수) */
+                                    var v = parseFloat(item.val);
+                                    if (isFinite(v) && item.to) v = ZERO_DECIMAL[item.to] ? Math.round(v) : Math.round(v * 100) / 100;
+                                    var r = sendToCalc(v);
+                                    if (r !== "ok"){ flash(r); return false; }
+                                    return true;
+                                  } },
+                                { label: "역산 →", run: function(item, flash){ return sendFrom(sendToReverse, item, flash); } }
+                              ],
+                              fxLoad);
+
+  /* 기록 항목을 환율 탭의 현재 계산으로 되돌린다 (금액 + 통화쌍) */
+  function fxLoad(item){
+    var restored = false;
+    if (item.from && item.to && item.amt != null &&
+        fFrom.querySelector('option[value="' + item.from + '"]') &&
+        fTo.querySelector('option[value="' + item.to + '"]')){
+      fFrom.value = item.from;
+      fTo.value = item.to;
+      restored = true;
+    }
+    fAmount.value = groupDecimal(restored ? String(item.amt) : trimNum(parseFloat(item.val)));
+    fireInput(fAmount);
+    if (restored) fxSavePair();
+    syncFavButtons();
+    fxCalc();
+  }
+
+  (function bindFxActions(){
+    var saveBtn = $("f-save"), saveFlash = makeFlash(saveBtn);
+    saveBtn.addEventListener("click", function(){
+      if (!isFinite(fxState.value)){ saveFlash("금액 없음"); return; }
+      var from = fFrom.value, to = fTo.value;
+      var amt = parseFloat(decimalOnly(fAmount.value));
+      fxHistory.add(fmtMoney(amt, from) + " " + from + " → " + to,
+                    String(fxState.value),
+                    fmtMoney(fxState.value, to) + " " + to,
+                    { from: from, to: to, amt: String(amt) });
+      saveFlash("저장됨 ✓");
+    });
+
+    var copyFlash = makeFlash(fCopyBtn);
+    fCopyBtn.addEventListener("click", function(){
+      if (!fxState.text){ copyFlash("금액 없음"); return; }
+      copyText(fxState.text, fCopyBox, copyFlash);
+    });
+  })();
+
+  fxCalc();
+  fxHistory.render();
+  if (Date.now() - fxFetchedAt > FX_TTL) fxFetch(false);
+
+  /* ================= tabs ================= */
+  var TABS = {
+    discount: { tab: $("tab-discount"), panel: panelD },
+    calc:     { tab: $("tab-calc"),     panel: panelC },
+    fx:       { tab: $("tab-fx"),       panel: panelF },
+    reverse:  { tab: $("tab-reverse"),  panel: panelR }
+  };
 
   function selectTab(which){
-    if (!TABS[which]) which = "time";
-    Object.keys(TABS).forEach(function(k){
-      var on = k === which;
-      $(TABS[k][0]).setAttribute("aria-selected", String(on));
-      $(TABS[k][1]).hidden = !on;
+    if (!TABS[which]) which = "discount";
+    Object.keys(TABS).forEach(function(key){
+      var on = key === which;
+      TABS[key].tab.setAttribute("aria-selected", on ? "true" : "false");
+      TABS[key].panel.hidden = !on;
+      TABS[key].panel.style.display = on ? "flex" : "";
     });
-    closeCal();
-    currentTab = which;
-    try { localStorage.setItem("tdc-tab", which); } catch(e){}
-    if (KP_FIELDS && KP_FIELDS[which]) kpFocus(kpList()[0]);
+    if (which === "calc" && document.activeElement && document.activeElement.blur){
+      document.activeElement.blur();
+    } else if (which !== "calc"){
+      /* on a pointer device, put the caret back in the first field so typing just works */
+      try {
+        if (window.matchMedia && window.matchMedia("(pointer: fine)").matches){
+          var first = TABS[which].panel.querySelector("input[type='text']");
+          if (first) first.focus({ preventScroll: true });
+        }
+      } catch(e){}
+    }
+    try { localStorage.setItem("discount-calc-tab", which); } catch(e){}
   }
-  $("tabTime").addEventListener("click", function(){ selectTab("time"); });
-  $("tabDate").addEventListener("click", function(){ selectTab("date"); });
-  $("tabDiff").addEventListener("click", function(){ selectTab("diff"); });
+  Object.keys(TABS).forEach(function(key){
+    TABS[key].tab.addEventListener("click", function(){ selectTab(key); });
+  });
 
-  /* ---------- 탭 순서 변경 ---------- */
-  var TAB_DEF = [
-    {key: "time", label: "시간 계산"},
-    {key: "date", label: "날짜 계산"},
-    {key: "diff", label: "차이 계산"}
-  ];
-  var TAB_ORDER_KEY = "tdc-taborder";
-  var tabOrder = TAB_DEF.map(function(t){ return t.key; });
+  var saved = null;
+  try { saved = localStorage.getItem("discount-calc-tab"); } catch(e){}
+  selectTab(saved);
+
+  /* ---------- 탭 순서 변경 ----------
+     탭 버튼을 .tabs 안에서 재배치하기만 하면 되고(그리드가 알아서 채운다),
+     선택 로직은 건드리지 않는다. 버튼을 옮겨도 이벤트 리스너는 그대로 따라간다. */
+  var TAB_ORDER_KEY = "discount-calc-tab-order";
+  var DEFAULT_ORDER = ["discount", "calc", "fx", "reverse"];
+  var TAB_NAMES = { discount:"할인계산", calc:"일반계산", fx:"환율", reverse:"원금역산" };
+  var tabOrder = DEFAULT_ORDER.slice();
 
   try {
-    var savedOrder = JSON.parse(localStorage.getItem(TAB_ORDER_KEY));
-    if (Array.isArray(savedOrder) && savedOrder.length === TAB_DEF.length &&
-        savedOrder.every(function(k){ return TABS[k]; }) &&
-        savedOrder.filter(function(k, i){ return savedOrder.indexOf(k) === i; }).length === TAB_DEF.length) {
-      tabOrder = savedOrder;
+    var storedOrder = JSON.parse(localStorage.getItem(TAB_ORDER_KEY) || "null");
+    if (Object.prototype.toString.call(storedOrder) === "[object Array]"){
+      var seen = {}, cleaned = [];
+      storedOrder.forEach(function(k){
+        if (TABS[k] && !seen[k]){ seen[k] = 1; cleaned.push(k); }
+      });
+      DEFAULT_ORDER.forEach(function(k){ if (!seen[k]) cleaned.push(k); });
+      if (cleaned.length === DEFAULT_ORDER.length) tabOrder = cleaned;
     }
   } catch(e){}
 
-  function applyTabOrder(){
-    var box = document.querySelector(".tabs");
-    tabOrder.forEach(function(k){ box.appendChild($(TABS[k][0])); });
-    try { localStorage.setItem(TAB_ORDER_KEY, JSON.stringify(tabOrder)); } catch(e){}
-    renderOrderList();
-  }
-
-  function moveTab(i, step){
-    var j = i + step;
-    if (j < 0 || j >= tabOrder.length) return;
-    var t = tabOrder[i]; tabOrder[i] = tabOrder[j]; tabOrder[j] = t;
-    applyTabOrder();
-  }
+  var tabStrip = document.querySelector(".tabs");
+  var orderList = $("order-list"), orderPanel = $("order-panel"), orderToggle = $("order-toggle");
 
   function renderOrderList(){
-    var host = $("orderList");
-    host.innerHTML = "";
+    orderList.innerHTML = "";
     tabOrder.forEach(function(key, i){
-      var def = TAB_DEF.filter(function(t){ return t.key === key; })[0];
       var row = document.createElement("div");
       row.className = "orderrow";
 
@@ -807,1059 +2441,137 @@
       num.textContent = (i + 1) + ".";
       var label = document.createElement("span");
       label.className = "orderlabel";
-      label.textContent = def.label;
+      label.textContent = TAB_NAMES[key];
       name.appendChild(num);
       name.appendChild(label);
 
       var btns = document.createElement("div");
       btns.className = "orderbtns";
-      [["\u2191", -1, "위로"], ["\u2193", 1, "아래로"]].forEach(function(spec){
+      [["↑", -1, "위로"], ["↓", 1, "아래로"]].forEach(function(def){
         var b = document.createElement("button");
         b.type = "button";
         b.className = "orderbtn";
-        b.textContent = spec[0];
-        b.setAttribute("aria-label", def.label + " " + spec[2]);
-        b.disabled = spec[1] < 0 ? i === 0 : i === tabOrder.length - 1;
-        b.addEventListener("click", function(){ moveTab(i, spec[1]); });
+        b.textContent = def[0];
+        b.setAttribute("aria-label", TAB_NAMES[key] + " " + def[2]);
+        b.disabled = (def[1] < 0 && i === 0) || (def[1] > 0 && i === tabOrder.length - 1);
+        b.addEventListener("click", function(){ moveTab(i, def[1]); });
         btns.appendChild(b);
       });
 
       row.appendChild(name);
       row.appendChild(btns);
-      host.appendChild(row);
+      orderList.appendChild(row);
     });
   }
 
-  $("orderToggle").addEventListener("click", function(){
-    var open = $("orderPanel").hidden;
-    $("orderPanel").hidden = !open;
-    this.setAttribute("aria-expanded", String(open));
-  });
+  function applyTabOrder(){
+    tabOrder.forEach(function(key){ tabStrip.appendChild(TABS[key].tab); });
+    try { localStorage.setItem(TAB_ORDER_KEY, JSON.stringify(tabOrder)); } catch(e){}
+    renderOrderList();
+  }
 
-  $("orderReset").addEventListener("click", function(){
-    tabOrder = TAB_DEF.map(function(t){ return t.key; });
+  function moveTab(i, delta){
+    var j = i + delta;
+    if (j < 0 || j >= tabOrder.length) return;
+    var tmp = tabOrder[i];
+    tabOrder[i] = tabOrder[j];
+    tabOrder[j] = tmp;
+    applyTabOrder();
+  }
+
+  orderToggle.addEventListener("click", function(){
+    var open = orderPanel.hidden;
+    orderPanel.hidden = !open;
+    orderToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    orderToggle.textContent = open ? "완료" : "탭 순서 변경";
+  });
+  $("order-reset").addEventListener("click", function(){
+    tabOrder = DEFAULT_ORDER.slice();
     applyTabOrder();
   });
 
   applyTabOrder();
 
-  /* ---------- segmented controls ---------- */
-  // 마지막으로 고른 +/- 와 결과 단위를 기기에 저장해 다음에 열 때 그대로 띄웁니다
-  var PICK_KEY = {timeOp: "tdc-op-time", dateOp: "tdc-op-date", diffUnits: "tdc-unit-diff"};
-  var PICK_ATTR = {timeOp: "op", dateOp: "op", diffUnits: "unit"};
-
-  function applyPick(containerId, value){
-    var attr = PICK_ATTR[containerId], hit = false;
-    Array.prototype.forEach.call($(containerId).querySelectorAll("button"), function(b){
-      if (b.dataset[attr] === value) hit = true;
-    });
-    if (!hit) return false;
-    Array.prototype.forEach.call($(containerId).querySelectorAll("button"), function(b){
-      b.setAttribute("aria-pressed", String(b.dataset[attr] === value));
-    });
-    return true;
-  }
-  function savePick(containerId, value){
-    try { localStorage.setItem(PICK_KEY[containerId], value); } catch(e){}
-  }
-  function restorePicks(){
-    Object.keys(PICK_KEY).forEach(function(id){
-      var v = null;
-      try { v = localStorage.getItem(PICK_KEY[id]); } catch(e){}
-      if (v) applyPick(id, v);
-    });
-  }
-
-  function wireSegment(container){
-    container.addEventListener("click", function(ev){
-      var btn = ev.target.closest("button");
-      if (!btn) return;
-      Array.prototype.forEach.call(container.querySelectorAll("button"), function(b){
-        b.setAttribute("aria-pressed", String(b === btn));
-      });
-      if (PICK_KEY[container.id]) savePick(container.id, btn.dataset[PICK_ATTR[container.id]]);
-    });
-  }
-  wireSegment($("timeOp"));
-  wireSegment($("dateOp"));
-
-  function currentOp(container){
-    var on = container.querySelector('button[aria-pressed="true"]');
-    return on ? on.dataset.op : "+";
-  }
-  /* ---------- numeric input hygiene ---------- */
-  Array.prototype.forEach.call(document.querySelectorAll('.spans input'), function(input){
-    input.addEventListener("input", function(){
-      var cleaned = input.value.replace(/[^0-9]/g, "").replace(/^0+(?=\d)/, "");
-      if (cleaned.length > 7) cleaned = cleaned.slice(0, 7);
-      if (cleaned !== input.value) input.value = cleaned;
+  /* Clicking anywhere in an input box focuses its field — the padding around the
+     text would otherwise swallow the click and leave the keyboard with no target. */
+  Array.prototype.forEach.call(document.querySelectorAll(".inputwrap"), function(wrap){
+    wrap.addEventListener("mousedown", function(ev){
+      var inp = wrap.querySelector("input");
+      if (!inp || ev.target === inp) return;
+      if (ev.target.classList && ev.target.classList.contains("clearbtn")) return;
+      ev.preventDefault();
+      inp.focus();
+      try { inp.setSelectionRange(inp.value.length, inp.value.length); } catch(e){}
     });
   });
 
-  // 숫자만 치면 뒤 두 자리를 분으로 보고 콜론을 넣습니다 (1530 -> 15:30)
-  function formatTimeDigits(el){
-    var d = el.value.replace(/[^0-9]/g, "").slice(0, 4);
-    el.value = d.length > 2 ? d.slice(0, d.length - 2) + ":" + d.slice(-2) : d;
-    return d;
-  }
-
-  ["baseTime", "addAmount", "diffT1", "diffT2"].forEach(function(id){
-    $(id).addEventListener("input", function(){ formatTimeDigits(this); });
-  });
-  ["baseTime", "diffT1", "diffT2"].forEach(function(id){
-    $(id).addEventListener("blur", function(){
-      var t = parseClock(this.value);
-      if (t) this.value = pad(t.h) + ":" + pad(t.m);
-    });
-  });
-
-  // 기준 시간: "930" -> 09:30, "2330" -> 23:30, "15" -> 15:00
-  function parseClock(raw){
-    var d = String(raw || "").replace(/[^0-9]/g, "");
-    if (!d) return null;
-    var h, m;
-    if (d.length <= 2) { h = parseInt(d, 10); m = 0; }
-    else { h = parseInt(d.slice(0, d.length - 2), 10); m = parseInt(d.slice(-2), 10); }
-    if (isNaN(h) || isNaN(m) || h > 23 || m > 59) return null;
-    return {h: h, m: m};
-  }
-
-  // 날짜 입력: 숫자 8자리를 치면 2026.09.26 형태로 정리됩니다
-  ["baseDate", "diffD1", "diffD2"].forEach(function(id){
-    $(id).addEventListener("input", function(){
-      var d = this.value.replace(/[^0-9]/g, "").slice(0, 8);
-      var out = d.slice(0, 4);
-      if (d.length > 4) out += "." + d.slice(4, 6);
-      if (d.length > 6) out += "." + d.slice(6, 8);
-      this.value = out;
-    });
-    $(id).addEventListener("blur", function(){
-      var v = parseDate(this.value);
-      if (v) this.value = fmtDate(v.y, v.m, v.d);
-    });
-  });
-
-  function fmtDate(y, m, d){ return y + "." + pad(m) + "." + pad(d); }
-
-  function parseDate(raw){
-    var s = String(raw || "").replace(/[^0-9]/g, "");
-    if (s.length !== 8) return null;
-    var y = parseInt(s.slice(0, 4), 10), m = parseInt(s.slice(4, 6), 10), d = parseInt(s.slice(6, 8), 10);
-    if (isNaN(y) || isNaN(m) || isNaN(d) || m < 1 || m > 12 || d < 1) return null;
-    if (d > lastDayOfMonth(y, m - 1)) return null;
-    return {y: y, m: m, d: d};
-  }
-
-  /* ---------- 달력 (날짜 → 월 → 연도 단계 선택) ---------- */
-  var calY, calM;
-
-  var calView = "day", calYearStart;
-  var calInputId = null, calBtnId = null, calBoxId = null, calErrId = null;
-
-  function renderCal(){
-    var sel = parseDate($(calInputId).value);
-    var now = new Date();
-    var title = calView === "day" ? (calY + "년 " + (calM + 1) + "월")
-              : calView === "month" ? (calY + "년")
-              : (calYearStart + " – " + (calYearStart + 11));
-
-    var html = '<div class="cal-head">'
-      + '<button type="button" class="cal-nav" data-step="-1" aria-label="이전">\u2039</button>'
-      + '<button type="button" class="cal-title" data-zoom="1">' + title + '</button>'
-      + '<button type="button" class="cal-nav" data-step="1" aria-label="다음">\u203a</button>'
-      + '</div>';
-
-    if (calView === "day") {
-      var days = lastDayOfMonth(calY, calM);
-      var startDow = new Date(Date.UTC(calY, calM, 1)).getUTCDay();
-      html += '<div class="cal-grid">';
-      for (var w = 0; w < 7; w++) html += '<span>' + WEEKDAYS[w] + '</span>';
-      for (var b = 0; b < startDow; b++) html += '<span></span>';
-      for (var d = 1; d <= days; d++) {
-        var c = [];
-        if (sel && sel.y === calY && sel.m === calM + 1 && sel.d === d) c.push("sel");
-        if (now.getFullYear() === calY && now.getMonth() === calM && now.getDate() === d) c.push("today");
-        html += '<button type="button" data-day="' + d + '" class="' + c.join(" ") + '">' + d + '</button>';
-      }
-      html += '</div>';
-    } else if (calView === "month") {
-      html += '<div class="cal-grid cal-zoom">';
-      for (var i = 0; i < 12; i++) {
-        var cm = [];
-        if (sel && sel.y === calY && sel.m === i + 1) cm.push("sel");
-        else if (now.getFullYear() === calY && now.getMonth() === i) cm.push("today");
-        html += '<button type="button" data-month="' + i + '" class="' + cm.join(" ") + '">' + (i + 1) + '월</button>';
-      }
-      html += '</div>';
-    } else {
-      html += '<div class="cal-grid cal-zoom">';
-      for (var yy = calYearStart; yy < calYearStart + 12; yy++) {
-        var cy = [];
-        if (sel && sel.y === yy) cy.push("sel");
-        else if (now.getFullYear() === yy) cy.push("today");
-        html += '<button type="button" data-year="' + yy + '" class="' + cy.join(" ") + '">' + yy + '</button>';
-      }
-      html += '</div>';
-    }
-    $(calBoxId).innerHTML = html;
-  }
-
-  function closeCal(){
-    if (!calBoxId) return;
-    $(calBoxId).hidden = true;
-    $(calBtnId).setAttribute("aria-expanded", "false");
-    calBoxId = null; calBtnId = null; calInputId = null;
-  }
-
-  // (입력칸, 달력 버튼, 달력 영역) 한 묶음씩 연결
-  function wireCalendar(inputId, btnId, boxId, errId){
-    $(btnId).addEventListener("click", function(ev){
-      ev.stopPropagation();
-      var wasOpen = calBoxId === boxId && !$(boxId).hidden;
-      closeCal();
-      if (wasOpen) return;
-
-      calInputId = inputId; calBtnId = btnId; calBoxId = boxId; calErrId = errId;
-      var sel = parseDate($(inputId).value);
-      var now = new Date();
-      calY = sel ? sel.y : now.getFullYear();
-      calM = sel ? sel.m - 1 : now.getMonth();
-      calView = "day";
-      renderCal();
-      $(boxId).hidden = false;
-      this.setAttribute("aria-expanded", "true");
-    });
-    $(boxId).addEventListener("click", calClick);
-  }
-
-  function calClick(ev){
-    ev.stopPropagation();
-    var btn = ev.target.closest("button");
-    if (!btn) return;
-
-    if (btn.dataset.step) {
-      var st = parseInt(btn.dataset.step, 10);
-      if (calView === "day") {
-        calM += st;
-        if (calM < 0) { calM = 11; calY--; }
-        else if (calM > 11) { calM = 0; calY++; }
-      } else if (calView === "month") {
-        calY += st;
-      } else {
-        calYearStart += st * 12;
-      }
-      renderCal();
-      return;
-    }
-
-    if (btn.dataset.zoom) {
-      if (calView === "day") calView = "month";
-      else if (calView === "month") { calView = "year"; calYearStart = Math.floor(calY / 12) * 12; }
-      renderCal();
-      return;
-    }
-
-    if (btn.dataset.month !== undefined) {
-      calM = parseInt(btn.dataset.month, 10);
-      calView = "day";
-      renderCal();
-      return;
-    }
-
-    if (btn.dataset.year !== undefined) {
-      calY = parseInt(btn.dataset.year, 10);
-      calView = "month";
-      renderCal();
-      return;
-    }
-
-    if (btn.dataset.day) {
-      var picked = calInputId;
-      $(calInputId).value = fmtDate(calY, calM + 1, parseInt(btn.dataset.day, 10));
-      if (calErrId) clearError($(calErrId));
-      closeCal();
-      if (picked === "baseDate") liveDate(); else liveDiffDate();
-    }
-  }
-
-  wireCalendar("baseDate", "calBtn", "cal", "dateError");
-  wireCalendar("diffD1", "calBtn1", "cal1", "diffDateError");
-  wireCalendar("diffD2", "calBtn2", "cal2", "diffDateError");
-
-  document.addEventListener("click", function(ev){
-    if (!calBoxId || $(calBoxId).hidden) return;
-    if ($(calBoxId).contains(ev.target) || $(calBtnId).contains(ev.target)) return;
-    closeCal();
-  });
-
-  // 더하거나 뺄 시간: "30" -> 30분, "130" -> 1시간 30분, "1530" -> 15시간 30분
-  function parseDuration(raw){
-    var d = String(raw || "").replace(/[^0-9]/g, "");
-    if (!d) return null;
-    var h, m;
-    if (d.length <= 2) { h = 0; m = parseInt(d, 10); }
-    else { h = parseInt(d.slice(0, d.length - 2), 10); m = parseInt(d.slice(-2), 10); }
-    if (isNaN(h) || isNaN(m)) return null;
-    if (d.length > 2 && m > 59) return "minute";
-    return {h: h, m: m};
-  }
-
-  /* ---------- helpers ---------- */
-  function pad(n){ return String(n).padStart(2, "0"); }
-
-  function readCount(el){
-    var raw = (el.value || "").trim();
-    if (raw === "") return null;
-    var n = parseInt(raw, 10);
-    if (!isFinite(n) || isNaN(n) || n < 0) return null;
-    return n;
-  }
-  var ERR_KEY = {timeError: "time", dateError: "date", diffTimeError: "diffTime", diffDateError: "diffDate"};
-
-  function clearResult(k){
-    var v = $(k + "Value");
-    v.textContent = "계산 결과가 여기에 표시됩니다";
-    v.classList.add("dim");
-    v.classList.remove("compact");
-    $(k + "Meta").innerHTML = "";
-    var K = k.charAt(0).toUpperCase() + k.slice(1);
-    $("copy" + K).hidden = true;
-    var useBtn = document.getElementById("use" + K);
-    if (useBtn) useBtn.hidden = true;
-  }
-
-  // 자동 계산 중에는 오류 문구를 띄우지 않고 결과만 비워둡니다
-  var quiet = false;
-
-  function showError(el, msg){
-    if (quiet) { clearError(el); clearResult(ERR_KEY[el.id] || "time"); return; }
-    el.textContent = msg;
-    el.hidden = false;
-    // 오류가 나면 이전 결과는 지웁니다
-    clearResult(ERR_KEY[el.id] || "time");
-  }
-  function clearError(el){ el.textContent = ""; el.hidden = true; }
-
-  var toastTimer = null;
-  function toast(msg){
-    var t = $("toast");
-    t.textContent = msg;
-    t.classList.add("show");
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 1600);
-  }
-
-  function copyText(text){
-    if (!text) return;
-    var done = function(){ toast("결과를 복사했습니다."); };
-    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
-    } else {
-      fallbackCopy(text, done);
-    }
-  }
-  function fallbackCopy(text, done){
-    var ta = document.createElement("textarea");
-    ta.value = text;
-    ta.setAttribute("readonly", "");
-    ta.style.position = "fixed";
-    ta.style.opacity = "0";
-    document.body.appendChild(ta);
-    ta.select();
-    var ok = false;
-    try { ok = document.execCommand("copy"); } catch(e){ ok = false; }
-    document.body.removeChild(ta);
-    if (ok) { done(); } else { toast("복사하지 못했습니다. 직접 선택해 주세요."); }
-  }
-
-  /* ---------- time math ---------- */
-  function calcTime(silent){
-    var errEl = $("timeError");
-    var base = $("baseTime").value;
-    if (!base.trim()) { clearError(errEl); clearResult("time"); return; }
-
-    var parsed = parseClock(base);
-    if (!parsed) { showError(errEl, "기준 시간을 15:30 형식으로 입력해주세요."); return; }
-    var bh = parsed.h, bm = parsed.m, bs = 0;
-    base = pad(bh) + ":" + pad(bm);
-    if (!quiet) $("baseTime").value = base;
-
-    var amount = parseDuration($("addAmount").value);
-    if (amount === "minute") { showError(errEl, "분은 59 이하로 입력해주세요. 130 → 1시간 30분"); return; }
-    // 더하거나 뺄 시간이 비어 있으면 안내 없이 결과만 비워둡니다
-    if (!amount || (amount.h === 0 && amount.m === 0)) { clearError(errEl); clearResult("time"); return; }
-    var h = amount.h, m = amount.m;
-    if (!quiet) $("addAmount").value = h ? h + ":" + pad(m) : String(m);
-
-    clearError(errEl);
-
-    var op = currentOp($("timeOp"));
-    var delta = (h * 60 + m) * (op === "-" ? -1 : 1);
-    var total = bh * 60 + bm + delta;
-    var dayOffset = Math.floor(total / 1440);
-    var mins = ((total % 1440) + 1440) % 1440;
-
-    var clock = pad(Math.floor(mins / 60)) + ":" + pad(mins % 60);
-    lastClock = clock;   // 알람 단축어로 넘길 시각
-
-    // 하루 이상 넘어가면 오늘 기준으로 실제 날짜를 함께 표시합니다
-    var today = new Date();
-    var shifted = new Date(today.getFullYear(), today.getMonth(), today.getDate() + dayOffset);
-    var shortDate = String(shifted.getFullYear()).slice(2) + "." +
-      pad(shifted.getMonth() + 1) + "." + pad(shifted.getDate());
-    var out = dayOffset ? shortDate + " " + clock : clock;
-
-    $("timeValue").textContent = out;
-    $("timeValue").classList.remove("dim");
-    $("timeValue").classList.toggle("compact", dayOffset !== 0);
-    $("copyTime").hidden = false;
-    $("useTime").hidden = false;
-
-    var dayLabel = "";
-    if (dayOffset === 1) dayLabel = "다음 날";
-    else if (dayOffset === -1) dayLabel = "전날";
-    else if (dayOffset > 1) dayLabel = dayOffset + "일 후";
-    else if (dayOffset < -1) dayLabel = Math.abs(dayOffset) + "일 전";
-
-    var amountText = ((h ? h + "시간 " : "") + (m ? m + "분" : "")).trim();
-    var line = base + " " + (op === "-" ? "−" : "+") + " " + amountText + " = " + out;
-
-    var meta = $("timeMeta");
-    meta.innerHTML = "";
-    if (dayLabel) {
-      var badge = document.createElement("span");
-      badge.className = "badge";
-      badge.textContent = dayLabel;
-      meta.appendChild(badge);
-    }
-    var txt = document.createElement("span");
-    txt.textContent = line;
-    meta.appendChild(txt);
-    meta.hidden = false;
-
-    if (silent !== true) addHistory(line);
-  }
-
-  /* ---------- date math ---------- */
-  function spanValue(id){
-    var n = parseInt(($(id).value || "").replace(/[^0-9]/g, ""), 10);
-    return isFinite(n) && n > 0 ? n : 0;
-  }
-  function spanLabel(yy, mm, ww, dd){
-    var parts = [];
-    if (yy) parts.push(yy + "년");
-    if (mm) parts.push(mm + "개월");
-    if (ww) parts.push(ww + "주");
-    if (dd) parts.push(dd + "일");
-    return parts.join(" ");
-  }
-  function lastDayOfMonth(y, mIndex){ return new Date(Date.UTC(y, mIndex + 1, 0)).getUTCDate(); }
-  function addMonths(y, mIndex, d, n){
-    var total = y * 12 + mIndex + n;
-    var ny = Math.floor(total / 12);
-    var nm = ((total % 12) + 12) % 12;
-    var last = lastDayOfMonth(ny, nm);
-    return new Date(Date.UTC(ny, nm, Math.min(d, last)));
-  }
-
-  function calcDate(silent){
-    var errEl = $("dateError");
-    var base = $("baseDate").value;
-    if (!base.trim()) { clearError(errEl); clearResult("date"); return; }
-
-    var parsedDate = parseDate(base);
-    if (!parsedDate) { showError(errEl, "기준 날짜를 2026.01.15 형식으로 입력해주세요."); return; }
-    var y = parsedDate.y, mo = parsedDate.m - 1, d = parsedDate.d;
-    base = fmtDate(y, mo + 1, d);
-    if (!quiet) $("baseDate").value = base;
-
-    var yy = spanValue("spanYear"), mm = spanValue("spanMonth");
-    var ww = spanValue("spanWeek"), dd = spanValue("spanDay");
-    if (!yy && !mm && !ww && !dd) { clearError(errEl); clearResult("date"); return; }
-
-    clearError(errEl);
-
-    var op = currentOp($("dateOp"));
-    var sign = op === "-" ? -1 : 1;
-
-    // 년·개월을 먼저 더하고(월말 보정 포함) 그다음 주·일을 더합니다
-    var result = addMonths(y, mo, d, sign * (yy * 12 + mm));
-    if (ww || dd) {
-      result = new Date(Date.UTC(result.getUTCFullYear(), result.getUTCMonth(),
-        result.getUTCDate() + sign * (ww * 7 + dd)));
-    }
-    var spanText = spanLabel(yy, mm, ww, dd);
-
-    if (isNaN(result.getTime())) {
-      showError(errEl, "계산할 수 있는 범위를 벗어났습니다. 숫자를 줄여주세요."); return;
-    }
-
-    var ry = result.getUTCFullYear(), rm = result.getUTCMonth() + 1, rd = result.getUTCDate();
-    var out = fmtDate(ry, rm, rd);
-    var weekday = WEEKDAYS[result.getUTCDay()];
-
-    $("dateValue").textContent = out;
-    $("dateValue").classList.remove("dim");
-    $("copyDate").hidden = false;
-    $("useDate").hidden = false;
-
-    var meta = $("dateMeta");
-    meta.innerHTML = "";
-    var badge = document.createElement("span");
-    badge.className = "badge";
-    badge.textContent = weekday + "요일";
-    meta.appendChild(badge);
-    var txt = document.createElement("span");
-    txt.textContent = base + " " + (op === "-" ? "−" : "+") + " " + spanText + " = " + out;
-    meta.appendChild(txt);
-    meta.hidden = false;
-
-    $("dateValue").dataset.copy = out;
-
-    if (silent !== true) addHistory(base + " " + (op === "-" ? "−" : "+") + " " + spanText + " = " + out + " (" + weekday + ")");
-  }
-
-  /* ---------- 차이 계산 ---------- */
-  function showResult(k, value, metaNodes, compact){
-    var v = $(k + "Value");
-    v.textContent = value;
-    v.classList.remove("dim");
-    v.classList.toggle("compact", !!compact);
-    $("copy" + k.charAt(0).toUpperCase() + k.slice(1)).hidden = false;
-    var meta = $(k + "Meta");
-    meta.innerHTML = "";
-    metaNodes.forEach(function(n){ meta.appendChild(n); });
-    meta.hidden = false;
-  }
-  function badgeEl(text){
-    var b = document.createElement("span");
-    b.className = "badge";
-    b.textContent = text;
-    return b;
-  }
-  function textEl(text){
-    var t = document.createElement("span");
-    t.textContent = text;
-    return t;
-  }
-
-  // 시간 ~ 시간
-  function calcDiffTime(silent){
-    var errEl = $("diffTimeError");
-    if (!$("diffT1").value.trim() || !$("diffT2").value.trim()) {
-      clearError(errEl); clearResult("diffTime"); return;
-    }
-    var a = parseClock($("diffT1").value), b = parseClock($("diffT2").value);
-    if (!a || !b) { showError(errEl, "시간을 15:30 형식으로 입력해주세요."); return; }
-
-    var s1 = pad(a.h) + ":" + pad(a.m), s2 = pad(b.h) + ":" + pad(b.m);
-    if (!quiet) { $("diffT1").value = s1; $("diffT2").value = s2; }
-    clearError(errEl);
-
-    var mins = (b.h * 60 + b.m) - (a.h * 60 + a.m);
-    var overnight = false;
-    if (mins < 0) { mins += 1440; overnight = true; }
-
-    var hh = Math.floor(mins / 60), mm = mins % 60;
-    var out = (hh ? hh + "시간" : "") + (hh && mm ? " " : "") + (mm || !hh ? mm + "분" : "");
-
-    var nodes = [];
-    if (overnight) nodes.push(badgeEl("다음 날"));
-    nodes.push(textEl(s1 + " ~ " + s2 + " · 총 " + mins + "분"));
-    showResult("diffTime", out, nodes);
-    if (silent !== true) addHistory(s1 + " ~ " + s2 + " = " + out);
-  }
-
-  // 날짜 ~ 날짜
-  var lastDiffDate = null;
-
-  function currentDiffUnit(){
-    var on = $("diffUnits").querySelector('button[aria-pressed="true"]');
-    return on ? on.dataset.unit : "day";
-  }
-
-  function diffDateText(d, unit){
-    if (unit === "day") return d.totalDays + "일";
-    if (unit === "week") {
-      var w = Math.floor(d.totalDays / 7), r = d.totalDays % 7;
-      return w + "주" + (r ? " " + r + "일" : "");
-    }
-    if (unit === "month") return d.months + "개월" + (d.remDays ? " " + d.remDays + "일" : "");
-    var y = Math.floor(d.months / 12), m = d.months % 12;
-    var parts = [];
-    if (y) parts.push(y + "년");
-    if (m) parts.push(m + "개월");
-    if (d.remDays || !parts.length) parts.push(d.remDays + "일");
-    return parts.join(" ");
-  }
-
-  function renderDiffDate(silent){
-    var d = lastDiffDate;
-    if (!d) return;
-    var unit = currentDiffUnit();
-    var out = diffDateText(d, unit);
-
-    var nodes = [];
-    if (d.swapped) nodes.push(badgeEl("역순 입력"));
-    nodes.push(textEl(d.from + " ~ " + d.to + (unit === "day" ? "" : " · 총 " + d.totalDays + "일")));
-    showResult("diffDate", out, nodes, out.length > 9);
-    if (silent !== true) addHistory(d.from + " ~ " + d.to + " = " + out);
-  }
-
-  function calcDiffDate(silent){
-    var errEl = $("diffDateError");
-    if (!$("diffD1").value.trim() || !$("diffD2").value.trim()) {
-      clearError(errEl); clearResult("diffDate"); return;
-    }
-    var p = parseDate($("diffD1").value), q = parseDate($("diffD2").value);
-    if (!p || !q) { showError(errEl, "날짜를 2026.01.15 형식으로 입력해주세요."); return; }
-
-    if (!quiet) {
-      $("diffD1").value = fmtDate(p.y, p.m, p.d);
-      $("diffD2").value = fmtDate(q.y, q.m, q.d);
-    }
-    clearError(errEl);
-
-    var from = fmtDate(p.y, p.m, p.d), to = fmtDate(q.y, q.m, q.d);
-    var t1 = Date.UTC(p.y, p.m - 1, p.d), t2 = Date.UTC(q.y, q.m - 1, q.d);
-    var swapped = t2 < t1;
-    if (swapped) { var tp = p; p = q; q = tp; var tt = t1; t1 = t2; t2 = tt; }
-
-    var totalDays = Math.round((t2 - t1) / 86400000);
-
-    // 달력 기준 개월 수 + 남는 일수
-    var months = (q.y - p.y) * 12 + (q.m - p.m);
-    if (q.d < p.d) months--;
-    var anchorDate = addMonths(p.y, p.m - 1, p.d, months);
-    var remDays = Math.round((t2 - Date.UTC(anchorDate.getUTCFullYear(), anchorDate.getUTCMonth(), anchorDate.getUTCDate())) / 86400000);
-
-    lastDiffDate = {from: from, to: to, totalDays: totalDays, months: months, remDays: remDays, swapped: swapped};
-    renderDiffDate(silent === true);
-  }
-
-  /* 차이 계산 — 시간/날짜 중 하나만 표시 (키패드가 화면 안에 들어오도록) */
-  var diffMode = "time";
-
-  function applyDiffMode(m){
-    if (m !== "date") m = "time";
-    diffMode = m;
-    Array.prototype.forEach.call($("diffMode").querySelectorAll("button"), function(b){
-      b.setAttribute("aria-pressed", String(b.dataset.mode === m));
-    });
-    $("diffTimeCard").hidden = m !== "time";
-    $("diffDateCard").hidden = m !== "date";
-    closeCal();
-    try { localStorage.setItem("tdc-diffmode", m); } catch(e){}
-  }
-
-  $("diffMode").addEventListener("click", function(ev){
-    var btn = ev.target.closest("button");
-    if (!btn) return;
-    applyDiffMode(btn.dataset.mode);
-    kpFocus(kpList()[0]);
-  });
-
-  wireSegment($("diffUnits"));
-  $("diffUnits").addEventListener("click", function(ev){
-    if (ev.target.closest("button") && lastDiffDate) renderDiffDate(true);
-  });
-
-  $("calcDiffTime").addEventListener("click", calcDiffTime);
-  $("calcDiffDate").addEventListener("click", calcDiffDate);
-
-  $("nowDiffTime").addEventListener("click", function(){
-    var now = new Date();
-    $("diffT1").value = pad(now.getHours()) + ":" + pad(now.getMinutes());
-    clearError($("diffTimeError"));
-    liveDiffTime();
-  });
-  $("todayDiffDate").addEventListener("click", function(){
-    var now = new Date();
-    $("diffD1").value = fmtDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
-    clearError($("diffDateError"));
-    liveDiffDate();
-  });
-
-  $("clearDiffTime").addEventListener("click", function(){
-    $("diffT1").value = ""; $("diffT2").value = "";
-    clearError($("diffTimeError"));
-    clearResult("diffTime");
-    $("diffT1").focus();
-  });
-  $("clearDiffDate").addEventListener("click", function(){
-    $("diffD1").value = ""; $("diffD2").value = "";
-    lastDiffDate = null;
-    closeCal();
-    clearError($("diffDateError"));
-    clearResult("diffDate");
-    $("diffD1").focus();
-  });
-
-  $("copyDiffTime").addEventListener("click", function(){ copyText($("diffTimeValue").textContent); });
-  $("copyDiffDate").addEventListener("click", function(){ copyText($("diffDateValue").textContent); });
-
-  ["diffT1", "diffT2"].forEach(function(id){
-    $(id).addEventListener("keydown", function(ev){ if (ev.key === "Enter") { ev.preventDefault(); calcDiffTime(); } });
-  });
-  ["diffD1", "diffD2"].forEach(function(id){
-    $(id).addEventListener("keydown", function(ev){ if (ev.key === "Enter") { ev.preventDefault(); calcDiffDate(); } });
-  });
-
-  /* ---------- 자동 계산 · 자동 다음 칸 이동 ---------- */
-
-  // 입력이 완성되는 순간 결과만 갱신합니다 (오류 문구와 기록은 '계산' 버튼을 눌렀을 때만)
-  function live(fn){
-    return function(){
-      quiet = true;
-      try { fn(true); } finally { quiet = false; }
-    };
-  }
-  var liveTime = live(calcTime);
-  var liveDate = live(calcDate);
-  var liveDiffTime = live(calcDiffTime);
-  var liveDiffDate = live(calcDiffDate);
-
-  function wireLive(ids, run){
-    ids.forEach(function(id){
-      $(id).addEventListener("input", run);
-      $(id).addEventListener("change", run);
-    });
-  }
-  wireLive(["baseTime", "addAmount"], liveTime);
-  wireLive(["baseDate", "spanYear", "spanMonth", "spanWeek", "spanDay"], liveDate);
-  wireLive(["diffT1", "diffT2"], liveDiffTime);
-  wireLive(["diffD1", "diffD2"], liveDiffDate);
-
-  // +/− 를 바꿔도 바로 다시 계산합니다
-  $("timeOp").addEventListener("click", function(ev){ if (ev.target.closest("button")) liveTime(); });
-  $("dateOp").addEventListener("click", function(ev){ if (ev.target.closest("button")) liveDate(); });
-
-  // 숫자를 다 채우면 커서가 다음 칸으로 넘어갑니다 (키보드는 내려가지 않습니다)
-  var NEXT_FIELD = {baseTime: "addAmount", diffT1: "diffT2", baseDate: "spanYear", diffD1: "diffD2"};
-  var FULL_LEN = {baseTime: 4, diffT1: 4, baseDate: 8, diffD1: 8};
-
-  Object.keys(NEXT_FIELD).forEach(function(id){
-    $(id).addEventListener("input", function(ev){
-      // 지우는 중에는 이동하지 않습니다
-      if (ev.inputType && ev.inputType.indexOf("insert") !== 0) return;
-      var digits = this.value.replace(/[^0-9]/g, "");
-      if (digits.length < FULL_LEN[id]) return;
-      var caret = this.selectionStart;
-      if (caret !== null && caret < this.value.length) return;   // 중간을 고치는 중
-      var next = $(NEXT_FIELD[id]);
-      if (!next || next.disabled) return;
-      next.focus();
-      try { next.setSelectionRange(next.value.length, next.value.length); } catch(e){}
-    });
-  });
-
-  /* ---------- 숫자 키패드 ---------- */
-  // 탭마다 키패드가 채워 넣을 칸의 순서
-  var KP_FIELDS = {
-    time: ["baseTime", "addAmount"],
-    date: ["baseDate", "spanYear", "spanMonth", "spanWeek", "spanDay"],
-    diff: ["diffT1", "diffT2", "diffD1", "diffD2"]
-  };
-  var ALL_FIELDS = KP_FIELDS.time.concat(KP_FIELDS.date, KP_FIELDS.diff);
-  var kpTarget = KP_FIELDS.time[0];
-
-  // 입력칸을 직접 누르면 그 칸이 키패드의 대상이 됩니다
-  ALL_FIELDS.forEach(function(id){
-    $(id).addEventListener("focus", function(){ kpTarget = id; });
-  });
-
-  function kpList(){
-    if (currentTab === "diff") {
-      return diffMode === "date" ? ["diffD1", "diffD2"] : ["diffT1", "diffT2"];
-    }
-    return KP_FIELDS[currentTab] || KP_FIELDS.time;
-  }
-
-  function kpEl(){
-    var list = kpList();
-    if (list.indexOf(kpTarget) === -1) kpTarget = list[0];
-    return $(kpTarget);
-  }
-
-  // 커서를 옮겨도 기기 키보드는 뜨지 않습니다 (inputmode="none")
-  function kpFocus(id){
-    kpTarget = id;
-    var el = $(id);
-    try { el.focus({preventScroll: true}); } catch(e){ el.focus(); }
-    try { el.setSelectionRange(el.value.length, el.value.length); } catch(e){}
-  }
-
-  function kpFire(el, type, data){
-    var ev;
-    try {
-      ev = new InputEvent("input", {bubbles: true, inputType: type, data: data});
-    } catch(e){
-      ev = document.createEvent("Event");
-      ev.initEvent("input", true, false);
-    }
-    el.dispatchEvent(ev);
-  }
-
-  function kpPress(key){
-    var el = kpEl();
-    if (!el) return;
-    if (document.activeElement !== el) kpFocus(el.id);
-
-    if (key === "prev" || key === "next") {
-      var li = kpList(), ni = li.indexOf(el.id);
-      var step = key === "next" ? 1 : -1;
-      kpFocus(li[(ni + step + li.length) % li.length]);
-      return;
-    }
-
-    if (key === "back") {
-      var digits = el.value.replace(/[^0-9]/g, "");
-      if (!digits) {
-        // 이미 비어 있으면 앞 칸으로 넘어갑니다
-        var list = kpList(), i = list.indexOf(el.id);
-        if (i > 0) kpFocus(list[i - 1]);
-        return;
-      }
-      el.value = digits.slice(0, -1);
-      kpFire(el, "deleteContentBackward", null);
-      try { el.setSelectionRange(el.value.length, el.value.length); } catch(e){}
-      return;
-    }
-
-    el.value = el.value + key;
-    kpFire(el, "insertText", key);   // 서식 정리 · 자동 계산 · 자동 다음 칸 이동이 이어집니다
-    try { el.setSelectionRange(el.value.length, el.value.length); } catch(e){}
-  }
-
-  // 키를 눌러도 입력칸의 커서를 빼앗지 않습니다
-  $("kpGrid").addEventListener("mousedown", function(ev){ ev.preventDefault(); });
-  $("kpGrid").addEventListener("click", function(ev){
-    var btn = ev.target.closest("button");
-    if (!btn) return;
-    ev.preventDefault();
-    kpPress(btn.dataset.k);
-  });
-
-  /* ---------- history ---------- */
-  var history = [];
+  /* On touch-only devices the app's own keypad is the input method, so the fields are made
+     read-only: iOS and Android then never raise the system keyboard over the layout.
+     Any device with a real pointer (mouse or trackpad) keeps normal typing. */
+  var touchOnly = false;
   try {
-    var raw = localStorage.getItem("tdc-history");
-    if (raw) {
-      var parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) history = parsed.filter(function(x){ return typeof x === "string"; }).slice(0, 10);
+    touchOnly = window.matchMedia("(pointer: coarse)").matches &&
+                !window.matchMedia("(any-pointer: fine)").matches;
+  } catch(e){}
+  if (touchOnly){
+    dInputs.concat(rInputs).concat(fxInputs).forEach(function(el){
+      el.readOnly = true;
+      el.setAttribute("inputmode", "none");
+    });
+  }
+
+  setupTheme($("theme-btn"));
+
+  onDiscountSwitch();
+  onReverseSwitch();
+  calcDiscount();
+  calcReverse();
+
+  /* ---------- 확대(줌) 차단 ----------
+     iOS Safari ignores user-scalable=no, so the gestures are blocked directly.
+     CSS touch-action kills double-tap zoom; these listeners kill pinch zoom.
+     Every listener must be passive:false or preventDefault() is ignored. */
+  function block(ev){ ev.preventDefault(); }
+  ["gesturestart", "gesturechange", "gestureend"].forEach(function(name){
+    document.addEventListener(name, block, { passive: false });
+  });
+  ["touchstart", "touchmove"].forEach(function(name){
+    document.addEventListener(name, function(ev){
+      if (ev.touches && ev.touches.length > 1) ev.preventDefault();
+    }, { passive: false });
+  });
+  document.addEventListener("dblclick", block, { passive: false });
+
+  /* Fallback for any build where touch-action is not honoured. Controls are skipped so
+     rapid keypad tapping still registers as clicks. */
+  var lastTouchEnd = 0;
+  document.addEventListener("touchend", function(ev){
+    var t = ev.target;
+    if (t && t.closest && t.closest("button, input, textarea, label, a, .inputwrap")){
+      lastTouchEnd = 0;
+      return;
     }
-  } catch(e){ history = []; }
+    var now = Date.now();
+    if (now - lastTouchEnd <= 320) ev.preventDefault();
+    lastTouchEnd = now;
+  }, { passive: false });
 
-  function saveHistory(){ try { localStorage.setItem("tdc-history", JSON.stringify(history)); } catch(e){} }
-
-  function renderHistory(){
-    var list = $("histList");
-    list.innerHTML = "";
-    $("histEmpty").hidden = history.length > 0;
-    $("clearHist").hidden = history.length === 0;
-    history.forEach(function(item, i){
-      var li = document.createElement("li");
-      var span = document.createElement("span");
-      span.textContent = item;
-      var del = document.createElement("button");
-      del.type = "button";
-      del.textContent = "×";
-      del.setAttribute("aria-label", "기록 삭제");
-      del.addEventListener("click", function(){
-        history.splice(i, 1); saveHistory(); renderHistory();
-      });
-      li.appendChild(span); li.appendChild(del); list.appendChild(li);
-    });
-  }
-
-  function addHistory(entry){
-    history.unshift(entry);
-    if (history.length > 10) history.length = 10;
-    saveHistory();
-    renderHistory();
-  }
-
-  $("clearHist").addEventListener("click", function(){ history = []; saveHistory(); renderHistory(); });
-
-  /* ---------- wiring ---------- */
-  $("calcTime").addEventListener("click", calcTime);
-  $("calcDate").addEventListener("click", calcDate);
-
-  $("panelTime").addEventListener("keydown", function(ev){
-    if (ev.key === "Enter" && ev.target.tagName === "INPUT") { ev.preventDefault(); calcTime(); }
-  });
-  $("panelDate").addEventListener("keydown", function(ev){
-    if (ev.key === "Enter" && ev.target.tagName === "INPUT") { ev.preventDefault(); calcDate(); }
-  });
-
-  // 결과값을 기준 칸으로 옮깁니다 (이어서 계산할 때)
-  $("useTime").addEventListener("click", function(){
-    if (!lastClock) return;
-    $("baseTime").value = lastClock;
-    clearError($("timeError"));
-    liveTime();
-    toast("결과를 기준 시간으로 옮겼습니다.");
-  });
-  $("useDate").addEventListener("click", function(){
-    var v = $("dateValue").dataset.copy;
-    if (!v || !parseDate(v)) return;
-    $("baseDate").value = v;
-    closeCal();
-    clearError($("dateError"));
-    liveDate();
-    toast("결과를 기준 날짜로 옮겼습니다.");
-  });
-
-  $("copyTime").addEventListener("click", function(){ copyText($("timeValue").textContent); });
-  $("copyDate").addEventListener("click", function(){ copyText($("dateValue").dataset.copy || $("dateValue").textContent); });
-
-  function setNowTime(){
-    var now = new Date();
-    $("baseTime").value = pad(now.getHours()) + ":" + pad(now.getMinutes());
-  }
-  function setToday(){
-    var now = new Date();
-    $("baseDate").value = fmtDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
-  }
-
-  $("nowTime").addEventListener("click", function(){ setNowTime(); calcTime(); });
-
-  /* 아이폰 시계 앱 열기
-     1) clock-alarm:// 직접 호출 (비공식 — iOS가 막을 수 있음)
-     2) 단축어 호출 (Apple 공식) — 아래 이름의 단축어를 아이폰에 만들어 두세요.
-        단축어 내용: "앱 열기 → 시계"  (또는 "URL 열기 → clock-alarm://")        */
-  var ALARM_SHORTCUT = "알람";
-  var lastClock = null;   // 마지막 계산 결과의 시:분
-
-  var IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
-  $("openAlarm").addEventListener("click", function(){
-    var left = false;
-    var onHide = function(){ if (document.hidden) left = true; };
-    document.addEventListener("visibilitychange", onHide);
-
-    var done = function(){ document.removeEventListener("visibilitychange", onHide); };
-    var gone = function(){ return left || document.hidden; };
-
-    // 1차: 숨은 프레임으로 조용히 시도 — 막혀도 이 화면은 그대로 유지됩니다
-    var frame = document.createElement("iframe");
-    frame.style.display = "none";
-    frame.src = "clock-alarm://";
-    document.body.appendChild(frame);
-
-    setTimeout(function(){
-      if (frame.parentNode) frame.parentNode.removeChild(frame);
-      if (gone()) { done(); return; }
-
-      if (!IS_IOS) { done(); toast("아이폰에서만 알람 앱으로 이동할 수 있습니다."); return; }
-
-      // 2차: 단축어로 열기
-      var url = "shortcuts://run-shortcut?name=" + encodeURIComponent(ALARM_SHORTCUT);
-      // 계산 결과가 있으면 시각을 함께 넘깁니다 ('앱 열기' 단축어는 이 값을 무시합니다)
-      if (lastClock) url += "&input=text&text=" + encodeURIComponent(lastClock);
-      try { window.location.href = url; } catch (e) {}
-
-      setTimeout(function(){
-        if (gone()) { done(); return; }
-        // 3차: 마지막으로 직접 호출
-        try { window.location.href = "clock-alarm://"; } catch (e) {}
-        setTimeout(function(){
-          done();
-          if (!gone()) toast("알람 앱을 열 수 없습니다. 시계 앱에서 직접 설정해 주세요.");
-        }, 1200);
-      }, 1200);
-    }, 700);
-  });
-
-  $("nowDate").addEventListener("click", function(){ setToday(); calcDate(); });
-
-  // 각 칸만 비우기
-  $("clearBaseTime").addEventListener("click", function(){
-    lastClock = null;
-    $("baseTime").value = "";
-    clearError($("timeError"));
-    clearResult("time");
-    $("baseTime").focus();
-  });
-
-  $("clearAmount").addEventListener("click", function(){
-    $("addAmount").value = "";
-    clearError($("timeError"));
-    clearResult("time");
-    $("addAmount").focus();
-  });
-
-  // 초기화 후에도 커서는 직전에 있던 칸에 그대로 둡니다
-  var lastSpanId = null;
-  ["spanYear", "spanMonth", "spanWeek", "spanDay"].forEach(function(id){
-    $(id).addEventListener("focus", function(){ lastSpanId = id; });
-  });
-
-  $("clearSpans").addEventListener("click", function(){
-    ["spanYear", "spanMonth", "spanWeek", "spanDay"].forEach(function(id){ $(id).value = ""; });
-    clearError($("dateError"));
-    clearResult("date");
-    if (lastSpanId) $(lastSpanId).focus();
-  });
-
-  // 전체 초기화 — 입력과 결과만 비웁니다
-  // (+/- 와 결과 단위는 마지막에 고른 그대로, 기록도 유지)
-  function resetAll(){
-    lastClock = null;
-    $("baseTime").value = "";
-    $("addAmount").value = "";
-    $("baseDate").value = "";
-    ["spanYear", "spanMonth", "spanWeek", "spanDay"].forEach(function(id){ $(id).value = ""; });
-    closeCal();
-
-    $("diffT1").value = ""; $("diffT2").value = "";
-    $("diffD1").value = ""; $("diffD2").value = "";
-    lastDiffDate = null;
-
-    ["time", "date", "diffTime", "diffDate"].forEach(function(k){
-      clearError($(k + "Error"));
-      clearResult(k);
-    });
-  }
-
-  $("resetTime").addEventListener("click", resetAll);
-  $("resetDate").addEventListener("click", resetAll);
-
-  /* ---------- install prompt (Android / desktop Chrome) ---------- */
-  var deferredPrompt = null;
-  window.addEventListener("beforeinstallprompt", function(ev){
-    ev.preventDefault();
-    deferredPrompt = ev;
-    $("installBar").hidden = false;
-  });
-  $("installBtn").addEventListener("click", function(){
-    if (!deferredPrompt) { $("installBar").hidden = true; return; }
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(function(){
-      deferredPrompt = null;
-      $("installBar").hidden = true;
-    });
-  });
-  window.addEventListener("appinstalled", function(){ $("installBar").hidden = true; });
-
-  /* ---------- service worker ---------- */
-  if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    window.addEventListener("load", function(){
-      navigator.serviceWorker.register("sw.js").catch(function(){});
-    });
-  }
-
-  /* ---------- initial state ---------- */
-  restorePicks();
-  try { applyDiffMode(localStorage.getItem("tdc-diffmode") || "time"); } catch(e){ applyDiffMode("time"); }
-  renderHistory();
-  kpFocus(KP_FIELDS[currentTab][0]);
+  /* Put the caret in the first field on pointer devices so typing works right away. */
   try {
-    var savedTab = localStorage.getItem("tdc-tab");
-    if (savedTab === "date") selectTab("date");
+    if (window.matchMedia && window.matchMedia("(pointer: fine)").matches && panelC.hidden){
+      var opening = panelD.hidden ? (panelF.hidden ? rFinal : fAmount) : dAmount;
+      opening.focus({ preventScroll: true });
+    }
   } catch(e){}
 })();
+</script>
+
+<script>
+  if ("serviceWorker" in navigator && location.protocol !== "file:") {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./sw.js").catch(function () { /* offline support unavailable */ });
+    });
+  }
 </script>
 </body>
 </html>
