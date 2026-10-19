@@ -1,107 +1,88 @@
-/* 할인 계산기 — service worker
- * 앱 셸은 precache, 폰트는 런타임 캐시(stale-while-revalidate).
- * 배포 파일을 수정하면 CACHE_VERSION 값을 올려 주세요.
- */
+/* 시간 & 날짜 계산기 — 오프라인 지원 서비스 워커
+   앱 파일을 수정한 뒤에는 아래 CACHE 버전 숫자를 올려주세요 (예: v1 → v2). */
 
-const CACHE_VERSION = "discount-calc-v42";
-const SHELL_CACHE = `${CACHE_VERSION}-shell`;
-const FONT_CACHE = `${CACHE_VERSION}-font`;
+var CACHE = "tdc-v41";
 
-const SHELL_ASSETS = [
+var ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./icons/favicon.svg",
-  "./icons/favicon-32.png",
-  "./icons/apple-touch-icon.png",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./icons/icon-maskable-512.png"
+  "./icons/apple-touch-icon.png",
+  "./icons/favicon-32.png"
 ];
 
-const FONT_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com"];
-
-self.addEventListener("install", (event) => {
+self.addEventListener("install", function(event){
   event.waitUntil(
-    caches
-      .open(SHELL_CACHE)
-      .then((cache) => cache.addAll(SHELL_ASSETS))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE).then(function(cache){
+      return cache.addAll(ASSETS);
+    }).then(function(){
+      return self.skipWaiting();
+    })
   );
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener("activate", function(event){
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) =>
-        Promise.all(
-          keys
-            .filter((key) => !key.startsWith(CACHE_VERSION))
-            .map((key) => caches.delete(key))
-        )
-      )
-      .then(() => self.clients.claim())
+    caches.keys().then(function(keys){
+      return Promise.all(keys.map(function(key){
+        if (key !== CACHE) return caches.delete(key);
+      }));
+    }).then(function(){
+      return self.clients.claim();
+    })
   );
 });
 
-self.addEventListener("fetch", (event) => {
-  const request = event.request;
-  if (request.method !== "GET") return;
+self.addEventListener("fetch", function(event){
+  var req = event.request;
+  if (req.method !== "GET") return;
 
-  const url = new URL(request.url);
+  var url = new URL(req.url);
 
-  // 구글 폰트: 캐시 우선 + 백그라운드 갱신
-  if (FONT_HOSTS.includes(url.hostname)) {
+  // 구글 폰트는 처음 한 번 받아 캐시에 두고, 이후에는 오프라인에서도 같은 글꼴로 보입니다
+  if (url.host === "fonts.googleapis.com" || url.host === "fonts.gstatic.com") {
     event.respondWith(
-      caches.open(FONT_CACHE).then((cache) =>
-        cache.match(request).then((cached) => {
-          const network = fetch(request)
-            .then((response) => {
-              if (response && (response.ok || response.type === "opaque")) {
-                cache.put(request, response.clone());
-              }
-              return response;
-            })
-            .catch(() => cached);
-          return cached || network;
-        })
-      )
+      caches.match(req).then(function(cached){
+        if (cached) return cached;
+        return fetch(req).then(function(res){
+          var copy = res.clone();
+          caches.open(CACHE).then(function(c){ c.put(req, copy); });
+          return res;
+        }).catch(function(){ return cached; });
+      })
     );
     return;
   }
 
   if (url.origin !== self.location.origin) return;
 
-  // 페이지 이동: 네트워크 우선, 실패 시 캐시된 셸
-  if (request.mode === "navigate") {
+  // 페이지 요청: 네트워크 우선, 실패하면 캐시된 앱 화면
+  if (req.mode === "navigate") {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(SHELL_CACHE).then((cache) => cache.put("./index.html", copy));
-          return response;
-        })
-        .catch(() =>
-          caches.match("./index.html").then((cached) => cached || Response.error())
-        )
+      fetch(req).then(function(res){
+        var copy = res.clone();
+        caches.open(CACHE).then(function(c){ c.put("./index.html", copy); });
+        return res;
+      }).catch(function(){
+        return caches.match("./index.html");
+      })
     );
     return;
   }
 
-  // 그 외 동일 출처 자원: 캐시 우선
+  // 그 외 정적 파일: 캐시 우선
   event.respondWith(
-    caches.match(request).then((cached) => {
+    caches.match(req).then(function(cached){
       if (cached) return cached;
-      return fetch(request)
-        .then((response) => {
-          if (response && response.ok && response.type === "basic") {
-            const copy = response.clone();
-            caches.open(SHELL_CACHE).then((cache) => cache.put(request, copy));
-          }
-          return response;
-        })
-        .catch(() => cached);
+      return fetch(req).then(function(res){
+        if (res && res.status === 200 && res.type === "basic") {
+          var copy = res.clone();
+          caches.open(CACHE).then(function(c){ c.put(req, copy); });
+        }
+        return res;
+      });
     })
   );
 });
